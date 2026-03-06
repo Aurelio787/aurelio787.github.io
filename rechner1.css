@@ -4,6 +4,8 @@
     font-size: 40px;
     border-radius: 20px;
     width: 80px;
+}#button7:hover{
+    background-color: darkblue
 }
 #button8 {
     background-color: aqua;
@@ -117,4 +119,5 @@
     font-size: 40px;
     border-radius: 20px;
     width: 325px;
+
 }
