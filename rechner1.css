@@ -1,71 +1,68 @@
 #button7 {
     background-color: aqua;
-    position: relative;
+    position: center;
     font-size: 40px;
     border-radius: 20px;
     width: 80px;
-    cursor:pointer;
-}#button7:hover{
-    background-color: darkblue;
 }
 #button8 {
     background-color: aqua;
-    position: relative;
+    position: center;
     font-size: 40px;
     border-radius: 20px;
     width: 80px;
 }
 #button9 {
     background-color: aqua;
-    position: relative;
+    position: center;
     font-size: 40px;
     border-radius: 20px;
     width: 80px;
 }
 #button4 {
     background-color: aqua;
-    position: relative;
+    position: center;
     font-size: 40px;
     border-radius: 20px;
     width: 80px;
 }
 #button5 {
     background-color: aqua;
-    position: relative;
+    position: center;
     font-size: 40px;
     border-radius: 20px;
     width: 80px;
 }
 #button6 {
     background-color: aqua;
-    position: relative;
+    position: center;
     font-size: 40px;
     border-radius: 20px;
     width: 80px;
 }
 #button1 {
     background-color: aqua;
-    position: relative;
+    position: center;
     font-size: 40px;
     border-radius: 20px;
     width: 80px;    
 }
 #button2 {
     background-color: aqua;
-    position: relative;
+    position: center;
     font-size: 40px;
     border-radius: 20px;
     width: 80px;
 }
 #button3 {
     background-color: aqua;
-    position: relative;
+    position: center;
     font-size: 40px;
     border-radius: 20px;
     width: 80px;
 }
 #buttonClear {    background-color: rgba(255, 255, 255, 0.664);
-    position: relative;
+    position: center;
     font-size: 40px;
     border-radius: 20px;
     width: 80px;
@@ -74,41 +71,41 @@
 }
 #button0 {
     background-color: aqua;
-    position: relative;
+    position: center;
     font-size: 40px;
     border-radius: 20px;
     width: 80px;
 }
 #Gleich {    background-color: rgba(255, 255, 255, 0.664);
-    position: relative;
+    position: center;
     font-size: 40px;
     border-radius: 20px;
     width: 80px;
 
 }
 #buttonPLUS {background-color: rgba(255, 255, 255, 0.664);
-    position: relative;
+    position: center;
     font-size: 40px;
     border-radius: 20px;
     width: 80px;
 
 }
 #buttonMINUS {background-color: rgba(255, 255, 255, 0.664);
-    position: relative;
+    position: center;
     font-size: 40px;
     border-radius: 20px;
     width: 80px;
 
 }
-#buttonGETEILT {background-color: rgba(255, 255, 255, 0.664);
-    position: relative;
+#buttonDIVIDE {background-color: rgba(255, 255, 255, 0.664);
+    position: center;
     font-size: 40px;
     border-radius: 20px;
     width: 80px;
 
 }
-#buttonMAL {background-color: rgba(255, 255, 255, 0.664);
-    position: relative;
+#buttonMULTIPLY {background-color: rgba(255, 255, 255, 0.664);
+    position: center;
     font-size: 40px;
     border-radius: 20px;
     width: 80px;
@@ -116,10 +113,32 @@
 }
 #alfred {
     background-color: rgba(255, 255, 255, 0.664);
-    position: relative;
+    position: center;
     font-size: 40px;
     border-radius: 20px;
     width: 325px;
-
+}
+/* Die Animation definieren */
+/* Die Verzerrungs-Animation definieren */
+@keyframes verzerren {
+    0% { transform: skewY(0deg); }
+    
+    /* 25%: Linke Seite rauf, Rechte Seite runter */
+    /* "-15deg" zieht die linke obere Ecke hoch */
+    25% { transform: skewY(-15deg); } 
+    
+    50% { transform: skewY(0deg); }
+    
+    /* 75%: Linke Seite runter, Rechte Seite rauf */
+    /* "15deg" zieht die rechte obere Ecke hoch */
+    75% { transform: skewY(15deg); }  
+    
+    100% { transform: skewY(0deg); }
 }
 
+/* Diese Klasse wird per JS hinzugefügt */
+.google-effekt {
+    /* "0.6s" ist die Geschwindigkeit einer kompletten Verzerrung (hin und her) */
+    /* "4" bedeutet, es passiert viermal hintereinander */
+    animation: verzerren 0.6s ease-in-out 4; 
+}
