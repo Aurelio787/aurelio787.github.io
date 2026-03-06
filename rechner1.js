@@ -1,234 +1,124 @@
+"use strict";
+
 let alfred = document.getElementById("alfred");
-let input1 = 0; 
-let input2 = 0;
-let operator = false;
-let alertMessage = "0";
+let currentInput = "";   
+let previousInput = "";  
+let operator = null;     
 
-alfred.value = alertMessage; 
+function appendNumber(number) {
+    if (currentInput === "0" && number === 0) return;
+    if (currentInput === "0" && number !== 0) {
+        currentInput = number.toString();
+    } else {
+        currentInput += number.toString();
+    }
+    updateDisplay(currentInput);
+}
 
+function setOperator(op) {
+    if (previousInput !== "" && currentInput !== "") {
+        calculate();
+    }
+    if (currentInput === "" && previousInput === "") return; 
     
+    if (currentInput === "" && previousInput !== "") {
+        operator = op;
+        updateDisplay(previousInput + " " + operator);
+        return;
+    }
 
-if (input1 === 0 && operator === false && input2 === 0) {
- alertMessage = "0";
+    operator = op;
+    previousInput = currentInput;
+    currentInput = ""; 
+    updateDisplay(previousInput + " " + operator);
 }
-    else if (input1 !== 0 && operator === false && input2 !== 0) {
-        alertMessage = input1;
-}
-    else if (input1 !== 0 && operator !== false && input2 === 0) {
-        alertMessage = input1  + operator + "was ist ihre 2. Zahl?";
+
+function calculate() {
+    let result; // Variable am Anfang definieren!
+
+    // --- SPEZIALREGEL TEIL 1: 6 * 7 rechnen ---
+    if (previousInput === "6" && operator === "*" && currentInput === "7") {
+        result = "67";
+        updateDisplay(result);
+        
+        // Google-Effekt starten
+        document.body.classList.add("google-effekt"); 
+        setTimeout(() => { 
+            document.body.classList.remove("google-effekt"); 
+        }, 3000);
+
+        // Wir speichern die 67, damit man beim nächsten "=" Klick den Rickroll kriegt
+        currentInput = "67";
+        previousInput = "";
+        operator = null;
+        return; 
     }
-    else if (input1 !== 0 && operator !== false && input2 !== 0) {
-        alertMessage = input1 + operator + input2;
+    
+    // --- SPEZIALREGEL TEIL 2: Wenn bereits 67 im Display steht und man "=" drückt ---
+    if (currentInput === "67" && operator === null) {
+        // Rick-Roll öffnen 
+        window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ", "_blank"); 
+
+        // Ergebnis auf 42 setzen 
+        result = "42"; 
+        updateDisplay(result); 
+        currentInput = result.toString(); 
+        previousInput = ""; 
+        operator = null; 
+        return; 
     }
 
+    // --- NORMALER RECHENWEG ---
+    if (operator === null || currentInput === "") return;
 
- const button7 = document.getElementById("button7");
- button7.addEventListener("click", function() {
-    if (input1 == 0 ){
-        input1 = 7;
-        alertMessage = input1;
-    }
-        else   {
-        input2 = 7;
-        alertMessage = input1 + operator + input2;
-    }
-    alfred.value = alertMessage;
-});
-const button8 = document.getElementById("button8");
-button8.addEventListener("click", function() {
-    if (input1 == false ){
-        input1 = 8;
-        alertMessage = input1;
-    }
-        else   {
-        input2 = 8;
-        alertMessage = input1 + operator + input2;
-    }
-    alfred.value = alertMessage;
-});
-const button9 = document.getElementById("button9");
-button9.addEventListener("click", function() {
-    if (input1 == false ){
-        input1 = 9;
-        alertMessage = input1;
-    }
-        else   {
-        input2 = 9;
-        alertMessage = input1 + operator + input2;
-    }
-    alfred.value = alertMessage;
-});
-const buttonGETEILT = document.getElementById("buttonGETEILT");
-buttonGETEILT.addEventListener("click", function() {
-    if (operator === false) {
-        operator = "/";
-        alertMessage = input1 + operator + "was ist ihre 2. Zahl?";
-    }
-    else {        alertMessage = "Operator bereits gesetzt";
-    }
-    alfred.value = alertMessage;
-});
+    const prev = parseFloat(previousInput);
+    const curr = parseFloat(currentInput);
 
-const button4 = document.getElementById("button4");
-button4.addEventListener("click", function() {
-    if (input1 == false ){
-        input1 = 4;
-        alertMessage = input1;
-    }
-        else   {
-        input2 = 4;
-        alertMessage = input1 + operator + input2;
-    }
-    alfred.value = alertMessage;
-});
-const button5 = document.getElementById("button5");
-button5.addEventListener("click", function() {    if (input1 == false ){
-        input1 = 5;
-        alertMessage = input1;
-    }
-        else   {
-        input2 = 5;
-        alertMessage = input1 + operator + input2;
-    }
-    alfred.value = alertMessage;
-});
-const button6 = document.getElementById("button6");
-button6.addEventListener("click", function() {    
-    if (input1 == false ){
-        input1 = 6;
-        alertMessage = input1;
-    }
-        else   {
-        input2 = 6;
-        alertMessage = input1 + operator + input2;
-    }
-    alfred.value = alertMessage;
-});
-const buttonMAL = document.getElementById("buttonMAL");
-buttonMAL.addEventListener("click", function() {
-    if (operator === false) {
-        operator = "*";
-        alertMessage = input1 + operator + "was ist ihre 2. Zahl?";
-    }
-    else {        alertMessage = "Operator bereits gesetzt";
-    }
-    alfred.value = alertMessage;
-});
-const button1 = document.getElementById("button1");
-button1.addEventListener("click", function() {    if (input1 == false ){
-        input1 = 1;
-        alertMessage = input1;
-    }
-        else   {
-        input2 = 1;
-        alertMessage = input1 + operator + input2;
-    }
-    alfred.value = alertMessage;
-});
-const button2 = document.getElementById("button2");
-button2.addEventListener("click", function() {    if (input1 == false ){
-        input1 = 2;
-        alertMessage = input1;
-    }
-        else   {
-        input2 = 2;
-        alertMessage = input1 + operator + input2;
-    }
-    alfred.value = alertMessage;
-});
-const button3 = document.getElementById("button3");
-button3.addEventListener("click", function() {    if (input1 == false ){
-        input1 = 3;
-        alertMessage = input1;
-    }
-        else   {
-        input2 = 3;
-        alertMessage = input1 + operator + input2;
-    }
-    alfred.value = alertMessage;
-});
-const buttonMINUS = document.getElementById("buttonMINUS");
-buttonMINUS.addEventListener("click", function() {
-    if (operator === false) {
-        operator = "-";
-        alertMessage = input1 + operator + "was ist ihre 2. Zahl?";
-    }
-    else {        alertMessage = "Operator bereits gesetzt";
-    }
-    alfred.value = alertMessage;
-});
-const button0 = document.getElementById("button0");
-button0.addEventListener("click", function() {    if (input1 == false ){
-        input1 = 0;
-        alertMessage = input1;
-    }
-        else   {
-        input2 = 0;
-        alertMessage = input1 + operator + input2;
-    }
-    alfred.value = alertMessage;
-});
-const buttonPLUS = document.getElementById("buttonPLUS");
-buttonPLUS.addEventListener("click", function() {
-    if (operator === false) {
-        operator = "+";
-        alertMessage = input1 + operator + "was ist ihre 2. Zahl?";
-    }
-    else {        alertMessage = "Operator bereits gesetzt";
-    }
-    alfred.value = alertMessage;
-});
-const buttonGleich = document.getElementById("Gleich");
-buttonGleich.addEventListener("click", function() {
-    if (operator === false) {
-        alert("Kein Operator gesetzt");
-    }
-    else if (input2 === false) {
-        alertMessage = "Zweite Zahl fehlt";
-    }
+    if (prev === 9 && operator === "/" && curr === 11) {
+        result = "not nine eleven bro";
+    } 
     else {
-        let result;
         switch (operator) {
-            case "+":
-                result = input1 + input2;
-                break;
-            case "-":
-                result = input1 - input2;
-                break;
-            case "*":
-                result = input1 * input2;
-                break;
-            case "/":
-                if (input2 === 0) {
-                    alertMessage = "Division durch 0 nicht erlaubt";
-                    alfred.value = alertMessage;
-                    return;
-                }
-                result = input1 / input2;
-                break;  
+            case "+": result = prev + curr; break;
+            case "-": result = prev - curr; break;
+            case "*": result = prev * curr; break;
+            case "/": result = curr === 0 ? "Error" : prev / curr; break;
         }
-        alertMessage = "Ergebnis: " + result;
-        alfred.value = alertMessage;
-        input1 = 0;
-        input2 = 0;
-        operator = false;
     }
-});
-const buttonPUNKT = document.getElementById("buttonClear");
-buttonPUNKT.addEventListener("click", function() { 
-    if (input1 !== false) {
-        input1 = 0;
-    }
-     if (input2 !== false) {
-        input2 = 0;
-    }
-       if (operator !== false) {
-        operator = false;
-    }
-        alertMessage = "0";
-    
-{
-    alfred.value = alertMessage;
-}
-});
 
+    updateDisplay(result);
+    currentInput = result.toString(); 
+    previousInput = ""; 
+    operator = null;
+}
+
+function updateDisplay(value) {
+    alfred.value = value;
+}
+
+function clearAll() {
+    currentInput = "";
+    previousInput = "";
+    operator = null;
+    updateDisplay("0");
+}
+
+// --- EVENT LISTENER (IDs müssen mit HTML übereinstimmen!) ---
+document.getElementById("button7").addEventListener("click", () => appendNumber(7));
+document.getElementById("button8").addEventListener("click", () => appendNumber(8));
+document.getElementById("button9").addEventListener("click", () => appendNumber(9));
+document.getElementById("button4").addEventListener("click", () => appendNumber(4));
+document.getElementById("button5").addEventListener("click", () => appendNumber(5));
+document.getElementById("button6").addEventListener("click", () => appendNumber(6));
+document.getElementById("button1").addEventListener("click", () => appendNumber(1));
+document.getElementById("button2").addEventListener("click", () => appendNumber(2));
+document.getElementById("button3").addEventListener("click", () => appendNumber(3));
+document.getElementById("button0").addEventListener("click", () => appendNumber(0));
+
+document.getElementById("buttonPLUS").addEventListener("click", () => setOperator("+"));
+document.getElementById("buttonMINUS").addEventListener("click", () => setOperator("-"));
+document.getElementById("buttonMULTIPLY").addEventListener("click", () => setOperator("*"));
+document.getElementById("buttonDIVIDE").addEventListener("click", () => setOperator("/"));
+
+document.getElementById("Gleich").addEventListener("click", calculate);
+document.getElementById("buttonClear").addEventListener("click", clearAll);
