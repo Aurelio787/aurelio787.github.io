@@ -1,0 +1,67 @@
+/* Grunddesign für alle Buttons */
+button {
+    font-size: 40px;
+    border-radius: 20px;
+    width: 80px;
+    height: 60px;
+    margin: 2px;
+    /* Hier ist die schwarze Umrandung wieder */
+    border: 2px solid black; 
+    transition: background-color 0.2s, transform 0.1s;
+    cursor: pointer;
+}
+
+/* Aktive Klick-Animation */
+button:active {
+    transform: scale(0.95);
+}
+
+/* Farben für die Zahlen-Buttons */
+#button0, #button1, #button2, #button3, #button4, 
+#button5, #button6, #button7, #button8, #button9 {
+    background-color: aqua;
+}
+
+/* Hover-Effekt für Zahlen */
+#button0:hover, #button1:hover, #button2:hover, #button3:hover, #button4:hover, 
+#button5:hover, #button6:hover, #button7:hover, #button8:hover, #button9:hover {
+    background-color: #00ced1; 
+}
+
+/* Farben für Funktions-Buttons */
+#buttonClear, #Gleich, #buttonPLUS, #buttonMINUS, #buttonDIVIDE, #buttonMULTIPLY {
+    background-color: rgba(255, 255, 255, 0.664);
+}
+
+/* Hover-Effekt für Funktionen */
+#buttonClear:hover, #Gleich:hover, #buttonPLUS:hover, 
+#buttonMINUS:hover, #buttonDIVIDE:hover, #buttonMULTIPLY:hover {
+    background-color: rgba(200, 200, 200, 0.9);
+}
+
+/* Display Styling "Alfred" */
+#alfred {
+    background-color: rgba(255, 255, 255, 0.664);
+    font-size: 40px;
+    border-radius: 20px;
+    width: 345px;
+    margin-bottom: 10px;
+    text-align: right;
+    padding: 10px;
+    border: 2px solid black; 
+    /* Verhindert, dass das Display beim Tippen dicker wird */
+    box-sizing: border-box; 
+}
+
+/* Die Google-Animation */
+@keyframes verzerren {
+    0% { transform: skewY(0deg); }
+    25% { transform: skewY(-15deg); } 
+    50% { transform: skewY(0deg); }
+    75% { transform: skewY(15deg); }  
+    100% { transform: skewY(0deg); }
+}
+
+.google-effekt {
+    animation: verzerren 0.6s ease-in-out 4; 
+}
