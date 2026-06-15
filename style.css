@@ -32,3 +32,15 @@
     top: 20px;
     right: 20px;
 }
+#theme-switch svg{
+    fill: var(--base-variant)
+}
+#theme-switch svg:last-child{
+    display: none;
+}
+.darkmode #theme-switch svg :last-child{
+    display: none;
+}
+.darkmode #theme-switch svg :last-child{
+    display: block;
+}
