@@ -1,18 +1,27 @@
 let darkmode = localStorage.getItem('darkmode')
-const themeswitch = document.getElementById('theme-switch')
+const themeSwitch = document.getElementById('theme-switch')
 
-const enabledarkmode = () => {
-    document.body.classList.add('darkmode')
-    localStorage.setItem('darkmode', 'avtive')
-}
-const disabledarkmode = () => {
-    document.body.classList.remove('darkmode')
-    localStorage.setItem('darkmode', null)
+const enableDarkmode = () => {
+  document.body.classList.add('darkmode')
+  localStorage.setItem('darkmode', 'active') // Speichert "active"
 }
 
+const disableDarkmode = () => {
+  document.body.classList.remove('darkmode')
+  localStorage.setItem('darkmode', 'disabled') // KORRIGIERT: "disabled" statt null
+}
 
-if (darkmode === "active") enabledarkmode()
-themeswitch.addEventListener("click", () => {
-    darkmode = localStorage.getItem('darkmode')
-    darkmode !== "active"? enabledarkmode() : disabledarkmode() 
+// Prüfen, was beim Start geladen werden soll
+if (darkmode === "active") {
+  enableDarkmode()
+}
+
+themeSwitch.addEventListener("click", () => {
+  darkmode = localStorage.getItem('darkmode')
+  // Wenn es nicht aktiv ist, einschalten. Sonst ausschalten.
+  if (darkmode !== "active") {
+    enableDarkmode()
+  } else {
+    disableDarkmode()
+  }
 })
