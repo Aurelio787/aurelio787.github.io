@@ -1,46 +1,84 @@
 :root {
-   --base-color: #f0f0f0;
-    --base-variant: #e0e0e0;
-    --text-color: #333;
-    --secondary-Text: #ffcc00;
+    --base-color: #f9f9f9;       
+    --base-variant: #e0e0e0;     
+    --text-color: #333333;       
+    --secondary-text: #666666;
     --primary-color: #007bff;
     --accent-color: #ff5733;
 }
-#Bauteil {
-    font-size: 200px;
-    background-color: var(--base-color);
-    border-radius: 20%;
-}
+
 .darkmode {
-       --base-color: #f0f0f0;
-    --base-variant: #e0e0e0;
-    --text-color: #333;
-    --secondary-Text: #ffcc00;
-    --primary-color: #007bff;
-    --accent-color: #ff5733;
+    --base-color: #121212;       
+    --base-variant: #2a2a2a;     
+    --text-color: #ffffff;       
+    --secondary-text: #ffcc00;   
+    --primary-color: #3700b3;
+    --accent-color: #ff7597;
 }
+
+body {
+    background-color: var(--base-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s; 
+    font-family: sans-serif;
+}
+
+#Bauteil {
+    font-size: 16px;
+    background-color: var(--base-variant);
+    color: var(--text-color);
+    border-radius: 4px; 
+    padding: 5px;
+}
+
+#ModellAuswahl {
+    font-size: 16px;
+    background-color: var(--base-variant);
+    color: var(--text-color);
+    border-radius: 4px;
+    padding: 5px;
+}
+
+#StartButton {
+    padding: 6px 12px;
+    font-size: 16px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
 #theme-switch {
-    height: 50px;;
+    height: 50px;
     width: 50px;
     padding: 0;
     border-radius: 50%;
     background-color: var(--base-variant);
+    border: 1px solid var(--text-color);
     display: flex;
     justify-content: center;
     align-items: center;
     position: fixed;
     top: 20px;
     right: 20px;
+    cursor: pointer;
 }
-#theme-switch svg{
-    fill: var(--base-variant)
+
+#theme-switch svg {
+    fill: var(--text-color); 
 }
-#theme-switch svg:last-child{
+
+#theme-switch svg:first-child {
+    display: block;
+}
+#theme-switch svg:last-child {
     display: none;
 }
-.darkmode #theme-switch svg :last-child{
+
+.darkmode #theme-switch svg:first-child {
     display: none;
 }
-.darkmode #theme-switch svg :last-child{
+.darkmode #theme-switch svg:last-child {
     display: block;
 }
