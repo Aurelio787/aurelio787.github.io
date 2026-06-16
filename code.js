@@ -5,6 +5,7 @@ const ModellAuswahl = document.getElementById("ModellAuswahl");
 const startButton = document.getElementById("StartButton"); 
 const anzeigeDiv = document.getElementById("AusgewaehlterInhalt");
 const BauteilBild = document.getElementById("BauteilBild");
+const BauteileListe = document.getElementById("ListeKomponente");
 
 let DB; 
 
@@ -66,7 +67,7 @@ startButton.addEventListener("click", function() {
 
   if (gefundenesProdukt) {
     anzeigeDiv.textContent = "Du hast ausgewählt: " + gefundenesProdukt.name + " für " + gefundenesProdukt.price;
-
+    ListeKomponente = gefundenesProdukt.name
     if (BauteilBild) {
       if (gewaehlteKategorie === "cpus") {
         const sockelName = gefundenesProdukt.socket.toLowerCase();
