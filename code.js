@@ -78,4 +78,4 @@ startButton.addEventListener("click", function() {
       BauteilBild.style.display = "block";
     }
   }
-});
+});alert(ListeKomponente);
