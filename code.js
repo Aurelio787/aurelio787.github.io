@@ -7,6 +7,7 @@ const anzeigeDiv = document.getElementById("AusgewaehlterInhalt");
 const BauteilBild = document.getElementById("BauteilBild");
 const BauteileListe = document.getElementById("ListeKomponente");
 const saveButton = document.getElementById("saveComponent");
+const searchfield = document.getElementById("searchfield");
 
 let DB; 
 
@@ -107,3 +108,7 @@ saveButton.addEventListener("click", function() {
     BauteileListe.value += gefundenesProdukt.name + " (" + gefundenesProdukt.price + ")\n";
   }
 });
+
+searchfield.addEventListener("input", function() {
+  alert("guet");
+})
