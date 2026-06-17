@@ -6,11 +6,11 @@ const startButton = document.getElementById("StartButton");
 const anzeigeDiv = document.getElementById("AusgewaehlterInhalt");
 const BauteilBild = document.getElementById("BauteilBild");
 const BauteileListe = document.getElementById("ListeKomponente");
-// NEU: Den Speichern-Button definieren
 const saveButton = document.getElementById("saveComponent");
 
 let DB; 
 
+// Spieldaten aus JSON laden
 fetch('./Datenbank.json')
   .then((response) => response.json())
   .then((json) => {
@@ -33,6 +33,7 @@ function startKonfigurator() {
   });
 }
 
+// Wenn eine Oberkategorie gewählt wird
 BauteilAuswahl.addEventListener("change", function() {
   const gewaehlteKategorie = BauteilAuswahl.value;
   ModellAuswahl.innerHTML = '<option value="">-- Modell wählen --</option>';
@@ -53,7 +54,7 @@ BauteilAuswahl.addEventListener("change", function() {
   }
 });
 
-// 1. Button: Nur zum Anzeigen von Text und Bild
+// 1. Button: Zeigt Info-Text und Bauteil-Bild an
 startButton.addEventListener("click", function() {
   const gewaehlteKategorie = BauteilAuswahl.value;
   const gewaehltesModellId = ModellAuswahl.value;
@@ -82,7 +83,7 @@ startButton.addEventListener("click", function() {
   }
 });
 
-// 2. Button: Speichert die Komponente erst bei Klick in die Liste
+// 2. Button: Speichert die Komponente und drückt danach "Enter" (\n)
 saveButton.addEventListener("click", function() {
   const gewaehlteKategorie = BauteilAuswahl.value;
   const gewaehltesModellId = ModellAuswahl.value;
@@ -96,13 +97,12 @@ saveButton.addEventListener("click", function() {
   const gefundenesProdukt = kategorieProdukte.find(item => item.id === gewaehltesModellId);
 
   if (gefundenesProdukt && BauteileListe) {
-    // KORREKTUR: Wenn noch der Standard-Text drinsteht (oder die Liste das "placeholder"-Attribut nutzt und leer ist), machen wir sie ganz sauber leer
+    // Falls noch alte Texte drinstehen, Feld leeren
     if (BauteileListe.value === "Liste deiner Komponenten" || BauteileListe.value === "Liste ihrer Komponenten") {
       BauteileListe.value = "";
     }
     
-    // Hier wird das Produkt hinzugefügt und das "\n" sorgt für den Zeilenumbruch (Enter)
+    // Schreibt Namen + Preis und springt mit \n in die nächste Zeile
     BauteileListe.value += gefundenesProdukt.name + " (" + gefundenesProdukt.price + ")\n";
   }
 });
-
