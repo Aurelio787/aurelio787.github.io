@@ -6,6 +6,7 @@ const startButton = document.getElementById("StartButton");
 const anzeigeDiv = document.getElementById("AusgewaehlterInhalt");
 const BauteilBild = document.getElementById("BauteilBild");
 const BauteileListe = document.getElementById("ListeKomponente");
+const savebutton = document.getElementById("saveComponent");
 
 let DB; 
 
@@ -51,6 +52,10 @@ BauteilAuswahl.addEventListener("change", function() {
   }
 });
 
+let ausgewählteKomponente = 
+
+
+
 startButton.addEventListener("click", function() {
   const gewaehlteKategorie = BauteilAuswahl.value;
   const gewaehltesModellId = ModellAuswahl.value;
@@ -67,9 +72,11 @@ startButton.addEventListener("click", function() {
   if (gefundenesProdukt) {
     anzeigeDiv.textContent = "Du hast ausgewählt: " + gefundenesProdukt.name + " für " + gefundenesProdukt.price;
     
-    // KORREKTUR: Schreibt den Produktnamen sauber in deine Textarea im HTML
     if (BauteileListe) {
       BauteileListe.value = gefundenesProdukt.name;
+    }
+    if (BauteileListe !== 0) {
+      setInterval 
     }
 
     if (BauteilBild) {
