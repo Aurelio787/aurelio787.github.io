@@ -17,6 +17,7 @@
 }
 
 body {
+    font-size: 125px;
     background-color: var(--base-color);
     color: var(--text-color);
     transition: background-color 0.3s, color 0.3s; 
@@ -91,3 +92,9 @@ body {
     left: 0px;
     text-size-adjust: 20px;
 }
+#BauteilBild {
+    font-size: 125px;
+    border: 10px;
+    border-color: #121212;
+}
+#Ausgewaelter
