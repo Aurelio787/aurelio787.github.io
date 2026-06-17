@@ -84,33 +84,25 @@ startButton.addEventListener("click", function() {
   }
 });
 
-// 2. Button: Speichert die Komponente und drückt danach "Enter" (\n)
-saveButton.addEventListener("click", function() {
+const suchLeiste = document.getElementById("SuchLeiste");
+
+suchLeiste.addEventListener("input", function() {
+  const suchBegriff = suchLeiste.value.toLowerCase();
   const gewaehlteKategorie = BauteilAuswahl.value;
-  const gewaehltesModellId = ModellAuswahl.value;
 
-  if (!gewaehltesModellId) {
-    alert("Bitte wähle zuerst ein Modell aus, das du speichern willst!");
-    return;
-  }
+  if (!gewaehlteKategorie) return;
 
-  const kategorieProdukte = DB[gewaehlteKategorie];
-  const gefundenesProdukt = kategorieProdukte.find(item => item.id === gewaehltesModellId);
+  const alleProdukte = DB[gewaehlteKategorie];
+  
+  const gefilterteProdukte = alleProdukte.filter(item => 
+    item.name.toLowerCase().includes(suchBegriff)
+  );
 
-  if (gefundenesProdukt && BauteileListe) {
-    // Falls noch alte Texte drinstehen, Feld leeren
-    if (BauteileListe.value === "Liste deiner Komponenten" || BauteileListe.value === "Liste ihrer Komponenten") {
-      BauteileListe.value = "";
-      
-    }
-    
-    // Schreibt Namen + Preis und springt mit \n in die nächste Zeile
-    BauteileListe.value += gefundenesProdukt.name + " (" + gefundenesProdukt.price + ")\n";
-  }
-});
-;
-
-searchfield.addEventListener("input", function() {
-  // Zeigt dir in der F12-Konsole, was der Nutzer gerade tippt
-  console.log("Aktuelle Eingabe: " + searchfield.value);
+  ModellAuswahl.innerHTML = '<option value="">-- Modell wählen --</option>';
+  gefilterteProdukte.forEach((item) => {
+    const option = document.createElement("option");
+    option.value = item.id;
+    option.textContent = `${item.name} (${item.price})`;
+    ModellAuswahl.appendChild(option);
+  });
 });
