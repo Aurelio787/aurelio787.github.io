@@ -110,5 +110,7 @@ saveButton.addEventListener("click", function() {
 });
 
 searchfield.addEventListener("input", function() {
-  alert("guet");
+  if ("input" = true){
+    alert("function");
+  }
 })
