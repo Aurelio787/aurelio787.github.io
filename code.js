@@ -100,6 +100,7 @@ saveButton.addEventListener("click", function() {
     // Falls noch alte Texte drinstehen, Feld leeren
     if (BauteileListe.value === "Liste deiner Komponenten" || BauteileListe.value === "Liste ihrer Komponenten") {
       BauteileListe.value = "";
+      
     }
     
     // Schreibt Namen + Preis und springt mit \n in die nächste Zeile
