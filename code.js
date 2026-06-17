@@ -82,7 +82,7 @@ startButton.addEventListener("click", function() {
   }
 });
 
-// NEU - 2. Button: Speichert die Komponente erst bei Klick in die Liste
+// 2. Button: Speichert die Komponente erst bei Klick in die Liste
 saveButton.addEventListener("click", function() {
   const gewaehlteKategorie = BauteilAuswahl.value;
   const gewaehltesModellId = ModellAuswahl.value;
@@ -96,12 +96,13 @@ saveButton.addEventListener("click", function() {
   const gefundenesProdukt = kategorieProdukte.find(item => item.id === gewaehltesModellId);
 
   if (gefundenesProdukt && BauteileListe) {
-    // Wenn in der Liste noch der Platzhalter-Text steht, leeren wir sie zuerst
-    if (BauteileListe.value === "Liste ihrer Komponenten") {
+    // KORREKTUR: Wenn noch der Standard-Text drinsteht (oder die Liste das "placeholder"-Attribut nutzt und leer ist), machen wir sie ganz sauber leer
+    if (BauteileListe.value === "Liste deiner Komponenten" || BauteileListe.value === "Liste ihrer Komponenten") {
       BauteileListe.value = "";
     }
     
-    // Fügt das neue Bauteil in einer neuen Zeile hinzu
+    // Hier wird das Produkt hinzugefügt und das "\n" sorgt für den Zeilenumbruch (Enter)
     BauteileListe.value += gefundenesProdukt.name + " (" + gefundenesProdukt.price + ")\n";
   }
 });
+
