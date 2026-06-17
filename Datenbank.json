@@ -268,6 +268,12 @@
     {"id": "psu-nzxt-c1200-goldcore", "type": "Powersuply", "name": "NZXT C1200 Gold Core", "brand": "NZXT", "wattage": "1200W", "certification": "80+ Gold", "modularity": "Vollmodular", "form_factor": "ATX", "atx_standard": "ATX 3.0", "warranty": "10 Jahre", "price": "175.-"}
   ],
   "cases": [
+    {"id": "case-bequiet-light-base-600lx", "type": "Case", "name": "be quiet! Light Base 600 LX", "brand": "be quiet!", "form_factor": "Midi-Tower", "color": "Schwarz", "side_panel": "Tempered Glass", "price": "169.-"},
+    {"id": "case-bequiet-dark-base-pro-901", "type": "Case", "name": "be quiet! Dark Base Pro 901", "brand": "be quiet!", "form_factor": "Full-Tower", "color": "Schwarz", "side_panel": "Tempered Glass", "price": "299.-"},
+    {"id": "case-bequiet-shadow-base-800dx", "type": "Case", "name": "be quiet! Shadow Base 800 DX", "brand": "be quiet!", "form_factor": "Midi-Tower", "color": "Schwarz", "side_panel": "Tempered Glass", "price": "185.-"},
+    {"id": "case-bequiet-pure-base-500dx", "type": "Case", "name": "be quiet! Pure Base 500DX", "brand": "be quiet!", "form_factor": "Midi-Tower", "color": "Schwarz", "side_panel": "Tempered Glass", "price": "99.-"},
+    {"id": "case-bequiet-pure-base-500fx", "type": "Case", "name": "be quiet! Pure Base 500FX", "brand": "be quiet!", "form_factor": "Midi-Tower", "color": "Schwarz", "side_panel": "Tempered Glass", "price": "129.-"},
+    {"id": "case-fractal-north-charcoal-black", "type": "Case", "name": "Fractal Design North Charcoal Black", "brand": "Fractal Design", "form_factor": "Midi-Tower", "color": "Charcoal Black", "side_panel": "Mesh", "price": "135.-"},
     {"id": "case-fractal-north-charcoal-black", "type": "Case", "name": "Fractal Design North Charcoal Black", "brand": "Fractal Design", "form_factor": "Midi-Tower", "color": "Charcoal Black", "side_panel": "Mesh", "price": "135.-"},
     {"id": "case-fractal-north-chalk-white", "type": "Case", "name": "Fractal Design North Chalk White", "brand": "Fractal Design", "form_factor": "Midi-Tower", "color": "Chalk White", "side_panel": "Mesh", "price": "135.-"},
     {"id": "case-fractal-north-charcoal-black-tg", "type": "Case", "name": "Fractal Design North Charcoal Black TG", "brand": "Fractal Design", "form_factor": "Midi-Tower", "color": "Charcoal Black", "side_panel": "Tempered Glass", "price": "145.-"},
