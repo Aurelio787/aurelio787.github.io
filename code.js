@@ -84,6 +84,7 @@ startButton.addEventListener("click", function() {
   }
 });
 
+
 const suchLeiste = document.getElementById("SuchLeiste");
 
 suchLeiste.addEventListener("input", function() {
@@ -92,12 +93,15 @@ suchLeiste.addEventListener("input", function() {
 
   if (!gewaehlteKategorie) return;
 
+  // Alle Produkte der aktuellen Kategorie holen
   const alleProdukte = DB[gewaehlteKategorie];
   
+  // Filtern
   const gefilterteProdukte = alleProdukte.filter(item => 
     item.name.toLowerCase().includes(suchBegriff)
   );
 
+  // Dropdown leeren und neu befüllen
   ModellAuswahl.innerHTML = '<option value="">-- Modell wählen --</option>';
   gefilterteProdukte.forEach((item) => {
     const option = document.createElement("option");
