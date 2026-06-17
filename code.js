@@ -110,7 +110,7 @@ saveButton.addEventListener("click", function() {
 });
 
 searchfield.addEventListener("input", function() {
-  if ("input" = true){
+  if ("input" == true){
     alert("function");
   }
-})
+});
