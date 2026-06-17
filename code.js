@@ -108,8 +108,9 @@ saveButton.addEventListener("click", function() {
     BauteileListe.value += gefundenesProdukt.name + " (" + gefundenesProdukt.price + ")\n";
   }
 });
+;
 
 searchfield.addEventListener("input", function() {
-  { alert("function");
-  }
+  // Zeigt dir in der F12-Konsole, was der Nutzer gerade tippt
+  console.log("Aktuelle Eingabe: " + searchfield.value);
 });
