@@ -6,7 +6,8 @@ const startButton = document.getElementById("StartButton");
 const anzeigeDiv = document.getElementById("AusgewaehlterInhalt");
 const BauteilBild = document.getElementById("BauteilBild");
 const BauteileListe = document.getElementById("ListeKomponente");
-const savebutton = document.getElementById("saveComponent");
+// NEU: Den Speichern-Button definieren
+const saveButton = document.getElementById("saveComponent");
 
 let DB; 
 
@@ -52,10 +53,7 @@ BauteilAuswahl.addEventListener("change", function() {
   }
 });
 
-let ausgewählteKomponente = 
-
-
-
+// 1. Button: Nur zum Anzeigen von Text und Bild
 startButton.addEventListener("click", function() {
   const gewaehlteKategorie = BauteilAuswahl.value;
   const gewaehltesModellId = ModellAuswahl.value;
@@ -72,13 +70,6 @@ startButton.addEventListener("click", function() {
   if (gefundenesProdukt) {
     anzeigeDiv.textContent = "Du hast ausgewählt: " + gefundenesProdukt.name + " für " + gefundenesProdukt.price;
     
-    if (BauteileListe) {
-      BauteileListe.value = gefundenesProdukt.name;
-    }
-    if (BauteileListe !== 0) {
-      setInterval 
-    }
-
     if (BauteilBild) {
       if (gewaehlteKategorie === "cpus") {
         const sockelName = gefundenesProdukt.socket.toLowerCase();
@@ -88,5 +79,29 @@ startButton.addEventListener("click", function() {
       }
       BauteilBild.style.display = "block";
     }
+  }
+});
+
+// NEU - 2. Button: Speichert die Komponente erst bei Klick in die Liste
+saveButton.addEventListener("click", function() {
+  const gewaehlteKategorie = BauteilAuswahl.value;
+  const gewaehltesModellId = ModellAuswahl.value;
+
+  if (!gewaehltesModellId) {
+    alert("Bitte wähle zuerst ein Modell aus, das du speichern willst!");
+    return;
+  }
+
+  const kategorieProdukte = DB[gewaehlteKategorie];
+  const gefundenesProdukt = kategorieProdukte.find(item => item.id === gewaehltesModellId);
+
+  if (gefundenesProdukt && BauteileListe) {
+    // Wenn in der Liste noch der Platzhalter-Text steht, leeren wir sie zuerst
+    if (BauteileListe.value === "Liste ihrer Komponenten") {
+      BauteileListe.value = "";
+    }
+    
+    // Fügt das neue Bauteil in einer neuen Zeile hinzu
+    BauteileListe.value += gefundenesProdukt.name + " (" + gefundenesProdukt.price + ")\n";
   }
 });
