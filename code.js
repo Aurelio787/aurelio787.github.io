@@ -61,13 +61,17 @@ startButton.addEventListener("click", function() {
     return;
   }
 
-  // Das ausgewählte Produkt aus der Datenbank suchen, um an den Sockel zu kommen
   const kategorieProdukte = DB[gewaehlteKategorie];
   const gefundenesProdukt = kategorieProdukte.find(item => item.id === gewaehltesModellId);
 
   if (gefundenesProdukt) {
     anzeigeDiv.textContent = "Du hast ausgewählt: " + gefundenesProdukt.name + " für " + gefundenesProdukt.price;
-    ListeKomponente = gefundenesProdukt.name
+    
+    // KORREKTUR: Schreibt den Produktnamen sauber in deine Textarea im HTML
+    if (BauteileListe) {
+      BauteileListe.value = gefundenesProdukt.name;
+    }
+
     if (BauteilBild) {
       if (gewaehlteKategorie === "cpus") {
         const sockelName = gefundenesProdukt.socket.toLowerCase();
@@ -78,4 +82,4 @@ startButton.addEventListener("click", function() {
       BauteilBild.style.display = "block";
     }
   }
-});alert(ListeKomponente);
+});
