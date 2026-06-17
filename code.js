@@ -35,24 +35,27 @@ function startKonfigurator() {
 
 // Such-Logik mit Sicherheits-Check
 if (suchLeiste) {
-    suchLeiste.addEventListener("input", function() {
-      // Sicherheits-Check: Wenn DB noch nicht da ist oder keine Kategorie gewählt, abbrechen
-      if (!DB || !BauteilAuswahl.value) return;
+  suchLeiste.addEventListener("input", function() {
+    const suchBegriff = suchLeiste.value.toLowerCase();
+    const gewaehlteKategorie = BauteilAuswahl.value;
+    
+    // Wenn keine Kategorie gewählt, passiert nichts
+    if (!gewaehlteKategorie || !DB[gewaehlteKategorie]) return;
 
-      const suchBegriff = suchLeiste.value.toLowerCase();
-      const gewaehlteKategorie = BauteilAuswahl.value;
-      const alleProdukte = DB[gewaehlteKategorie] || [];
-      
-      const gefilterteProdukte = alleProdukte.filter(item => 
-        item.name.toLowerCase().includes(suchBegriff)
-      );
+    // Filtert die Liste: Zeigt alles an, wenn Suchfeld leer ist
+    const alleProdukte = DB[gewaehlteKategorie];
+    const gefilterteProdukte = alleProdukte.filter(item => 
+      item.name.toLowerCase().includes(suchBegriff)
+    );
 
-      ModellAuswahl.innerHTML = '<option value="">-- Modell wählen --</option>';
-      gefilterteProdukte.forEach((item) => {
-        const option = document.createElement("option");
-        option.value = item.id;
-        option.textContent = `${item.name} (${item.price})`;
-        ModellAuswahl.appendChild(option);
-      });
+    // Dropdown leeren und neu befüllen
+    ModellAuswahl.innerHTML = '<option value="">-- Modell wählen --</option>';
+    
+    gefilterteProdukte.forEach((item) => {
+      const option = document.createElement("option");
+      option.value = item.id;
+      option.textContent = `${item.name} (${item.price})`;
+      ModellAuswahl.appendChild(option);
     });
+  });
 }
