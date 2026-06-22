@@ -17,7 +17,7 @@
 }
 
 body {
-    font-size: 125px;
+    font-size: 25px;
     background-color: var(--base-color);
     color: var(--text-color);
     transition: background-color 0.3s, color 0.3s; 
@@ -84,7 +84,7 @@ body {
     display: block;
 }
 #ListeKomponenten {
-    font-size: 160px;
+    font-size: 16px;
     background-color: var(--base-variant);
     color: var(--text-color);
     position: fixed;
@@ -94,7 +94,7 @@ body {
 }
 
 #BauteilBild {
-  width: 300px;
+  width: 30px;
   height: auto;
     max-width: 100%;
   border-radius: 8px;
