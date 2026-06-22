@@ -94,9 +94,9 @@ body {
 }
 
 #BauteilBild {
-  width: 30px;
+  width: 150px;
   height: auto;
-    max-width: 30px;
+    max-width: 150px;
   border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     display: block;
