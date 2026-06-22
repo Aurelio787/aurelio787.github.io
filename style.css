@@ -92,11 +92,17 @@ body {
     left: 0px;
     text-size-adjust: 20px;
 }
+
 #BauteilBild {
-    font-size: 25px;
-    border: 10px;
-    border-color: #121212;
+  width: 300px;
+  height: auto;
+    max-width: 100%;
+  border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    display: block;
+  margin: 10px auto;
 }
+
 #AusgewaehlterInhalt {
     font-size: 25px;
     border: 10px;
