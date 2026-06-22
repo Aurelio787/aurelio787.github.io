@@ -1,94 +1,111 @@
-#Num0 {
-    background-color: rgba(255, 255, 255, 0.479);
-    font-size: 20px;
-    border-radius: 10px;
-    
+:root {
+    --base-color: #f9f9f9;       
+    --base-variant: #e0e0e0;     
+    --text-color: #333333;       
+    --secondary-text: #666666;
+    --primary-color: #007bff;
+    --accent-color: #ff5733;
 }
-#Num1 {
-    background-color: rgba(255, 255, 255, 0.479);
-    font-size: 20px;
-    border-radius: 10px;
-    
-}
-#Num2 {
-    background-color: rgba(255, 255, 255, 0.479);
-    font-size: 20px;
-    border-radius: 10px;
 
+.darkmode {
+    --base-color: #121212;       
+    --base-variant: #2a2a2a;     
+    --text-color: #ffffff;       
+    --secondary-text: #ffcc00;   
+    --primary-color: #3700b3;
+    --accent-color: #ff7597;
 }
-#Num3 {
-    background-color: rgba(255, 255, 255, 0.479);
-    font-size: 20px;
-    border-radius: 10px;
-}
-#Num4 {
-    background-color: rgba(255, 255, 255, 0.479);
-    font-size: 20px;
-        border-radius: 10px;
 
+body {
+    font-size: 25px;
+    background-color: var(--base-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s; 
+    font-family: sans-serif;
 }
-#Num5 {
-    background-color: rgba(255, 255, 255, 0.479);
-    font-size: 20px;
-        border-radius: 10px;
 
+#Bauteil {
+    font-size: 16px;
+    background-color: var(--base-variant);
+    color: var(--text-color);
+    border-radius: 4px; 
+    padding: 5px;
 }
-#Num6 {
-    background-color: rgba(255, 255, 255, 0.479);
-    font-size: 20px;
-        border-radius: 10px;
 
+#ModellAuswahl {
+    font-size: 16px;
+    background-color: var(--base-variant);
+    color: var(--text-color);
+    border-radius: 4px;
+    padding: 5px;
 }
-#Num7 {
-    background-color: rgba(255, 255, 255, 0.479);
-    
-    font-size: 20px;
-        border-radius: 10px;
-    
+
+#StartButton {
+    padding: 6px 12px;
+    font-size: 16px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
-#Num8 {
-    background-color: rgba(255, 255, 255, 0.479);
-    font-size: 20px;
-    border-radius: 10px;
-    
-}
-#Num9 {
-    background-color: rgba(255, 255, 255, 0.479);
-    font-size: 20px;
-        border-radius: 10px;
-    
-}
-#TastGeteilt {
-    background-color: rgba(145, 211, 223, 0.479);
-    font-size: 20px;
-        border-radius: 10px;
-    
-}
-#TastMal {
-    background-color: rgba(145, 211, 223, 0.479);
-    font-size: 20px;
-        border-radius: 10px;
-    
-}
-#TastMinus {
-    background-color: rgba(145, 211, 223, 0.479);
-    font-size: 20px;
-    border-radius: 10px;
-}
-#TastPlus {
-    background-color: rgba(145, 211, 223, 0.479);
-    font-size: 20px;
-    border-radius: 10px;
-}
-#TastGleich {
-    background-color: rgba(145, 211, 223, 0.479);
-    font-size: 20px;
-    border-radius: 10px;
-    
-}
-#RechnungAusgabe { 
+
+#theme-switch {
     height: 50px;
-    border-radius: 10px;
-    -ms-text-size-adjust: 1px;
-
+    width: 50px;
+    padding: 0;
+    border-radius: 50%;
+    background-color: var(--base-variant);
+    border: 1px solid var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
 }
+
+#theme-switch svg {
+    fill: var(--text-color); 
+}
+
+#theme-switch svg:first-child {
+    display: block;
+}
+#theme-switch svg:last-child {
+    display: none;
+}
+
+.darkmode #theme-switch svg:first-child {
+    display: none;
+}
+.darkmode #theme-switch svg:last-child {
+    display: block;
+}
+#ListeKomponenten {
+    font-size: 16px;
+    background-color: var(--base-variant);
+    color: var(--text-color);
+    position: fixed;
+    top: 50%;
+    left: 0px;
+    text-size-adjust: 20px;
+}
+
+#BauteilBild {
+    width: 150px;
+    height: auto;
+    max-width: 300px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    display: block;
+    margin: 10px auto;
+}
+
+#AusgewaehlterInhalt {
+    font-size: 25px;
+    border: 10px;
+    border-color: #121212;
+}
+
