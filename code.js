@@ -114,55 +114,59 @@ startButton.addEventListener("click", function() {
 
       // Je nach Kategorie die spezifischen Eigenschaften anhängen
       if (gewaehlteKategorie === "gpus") {
-        addSpecLine("Marke", gefundenesProdukt.chip_manufacturer);
-        addSpecLine("VRAM", gefundenesProdukt.vram);
-        addSpecLine("Kühlung", gefundenesProdukt.cooling_type);
-        addSpecLine("TDP", gefundenesProdukt.tdp);
-        addSpecLine("RGB", gefundenesProdukt.rgb);
-        addSpecLine("Grösse", gefundenesProdukt.size);
-      } else if (gewaehlteKategorie === "cases") {
-        addSpecLine("Formfaktor", gefundenesProdukt.form_factor);
-        addSpecLine("Farbe", gefundenesProdukt.color);
-        addSpecLine("Seitenteil", gefundenesProdukt.side_panel);
-      }else if (gewaehlteKategorie === "psu")   {
-        addSpecLine("Anzahl Watt", gefundenesProdukt.wattage);
-        addSpecLine("Sind die Kabel abnehmbar", gefundenesProdukt.certification);
-        addSpecLine("Form Faktor", gefundenesProdukt.form_factor);
-        addSpecLine("ATX Standart", gefundenesProdukt.atx_standard);
-        addSpecLine("warscheinliche Upgrade sicherheit", gefundenesProdukt.warranty);
-      }else if (gewaehlteKategorie === "cpus") {
-        addSpecLine("Sockel", gefundenesProdukt.socket);
-        addSpecLine("RAM Kattegorie", gefundenesProdukt.ram);        
-        addSpecLine("Rating", gefundenesProdukt.rating);
-        addSpecLine("Cinebench 24 Singlecore Punktzahl", gefundenesProdukt.cinebench24single);
-        addSpecLine("Cinebench 24 Multicore Punktzahl", gefundenesProdukt.cinebench24multi);
-        addSpecLine("azahl Kerne", gefundenesProdukt.cores);
-        addSpecLine("Standart TDP", gefundenesProdukt.tdpnormal);
-        addSpecLine("Boost TDP", gefundenesProdukt.tdpboost);
-        addSpecLine("L3 Cache", gefundenesProdukt.L3cache);
-      }else if ( gewaehlteKategorie === "motherboards") {
-        addSpectLine("Chip Satz", gewaehlteKategorie.chipset);
-        addSpectLine("Sockel", gewaehlteKategorie.socket);
-        addSpectLine("RAM", gewaehlteKategorie.ramType);
-        addSpectLine("Anzahl RAM Bänke", gewaehlteKategorie.ramSlots);
-        addSpectLine("Form Faktor", gewaehlteKategorie.formFactor);
-        addSpectLine("Anzahl M.2 Slots", gewaehlteKategorie.m2Slots);
-        addSpectLine("Anzahl Sata Steckplätze", gewaehlteKategorie.sataPorts);
-        addSpectLine("Spezielle eigenschaften", gewaehlteKategorie.specialFeatures);
-      }else if (gewaehlteKategorie === "ssds") {
-        addSpecLine("Form Faktor", gewaehlteKategorie.form_factor);
-        addSpecLine("Schnittstelle", gewaehlteKategorie.interface);
-        addSpecLine("Kategorie", gewaehlteKategorie.category);
-      }else if (gewaehlteKategorie === coolers) {
-        addSpecLine("Kühlart", gewaehlteKategorie.cooling_type);
-        addSpecLine("Grösse dess Radiators", gewaehlteKategorie.radiator.size);
-        addSpecLine("Sockel Kompaktibilität", gewaehlteKategorie.socket_compatibility);
-        addSpecLine("Anzahl Lüfter", gewaehlteKategorie.fans);
-        addSpecLine("RGB Lüfter?", gewaehlteKategorie.rgb);
-      }
-      
-      // Standardmässig immer den Preis auflisten
-      addSpecLine("Preis", gefundenesProdukt.price);
+  addSpecLine("Marke", gefundenesProdukt.chip_manufacturer);
+  addSpecLine("VRAM", gefundenesProdukt.vram);
+  addSpecLine("Kühlung", gefundenesProdukt.cooling_type);
+  addSpecLine("TDP", gefundenesProdukt.tdp);
+  addSpecLine("RGB", gefundenesProdukt.rgb);
+  addSpecLine("Grösse", gefundenesProdukt.size);
+} else if (gewaehlteKategorie === "cases") {
+  addSpecLine("Formfaktor", gefundenesProdukt.form_factor);
+  addSpecLine("Farbe", gefundenesProdukt.color);
+  addSpecLine("Seitenteil", gefundenesProdukt.side_panel);
+} else if (gewaehlteKategorie === "psu") {
+  addSpecLine("Anzahl Watt", gefundenesProdukt.wattage);
+  addSpecLine("Sind die Kabel abnehmbar", gefundenesProdukt.certification);
+  addSpecLine("Form Faktor", gefundenesProdukt.form_factor);
+  addSpecLine("ATX Standart", gefundenesProdukt.atx_standard);
+  addSpecLine("warscheinliche Upgrade sicherheit", gefundenesProdukt.warranty);
+} else if (gewaehlteKategorie === "cpus") {
+  addSpecLine("Sockel", gefundenesProdukt.socket);
+  addSpecLine("RAM Kattegorie", gefundenesProdukt.ram);        
+  addSpecLine("Rating", gefundenesProdukt.rating);
+  addSpecLine("Cinebench 24 Singlecore Punktzahl", gefundenesProdukt.cinebench24single);
+  addSpecLine("Cinebench 24 Multicore Punktzahl", gefundenesProdukt.cinebench24multi);
+  addSpecLine("azahl Kerne", gefundenesProdukt.cores);
+  addSpecLine("Standart TDP", gefundenesProdukt.tdpnormal);
+  addSpecLine("Boost TDP", gefundenesProdukt.tdpboost);
+  addSpecLine("L3 Cache", gefundenesProdukt.L3cache);
+} else if (gewaehlteKategorie === "motherboards") {
+  addSpecLine("Chip Satz", gefundenesProdukt.chipset);
+  addSpecLine("Sockel", gefundenesProdukt.socket);
+  addSpecLine("RAM", gefundenesProdukt.ramType);
+  addSpecLine("Anzahl RAM Bänke", gefundenesProdukt.ramSlots);
+  addSpecLine("Form Faktor", gefundenesProdukt.formFactor);
+  addSpecLine("Anzahl M.2 Slots", gefundenesProdukt.m2Slots);
+  addSpecLine("Anzahl Sata Steckplätze", gefundenesProdukt.sataPorts);
+  addSpecLine("Spezielle eigenschaften", gefundenesProdukt.specialFeatures);
+} else if (gewaehlteKategorie === "ssds") {
+  addSpecLine("Form Faktor", gefundenesProdukt.form_factor);
+  addSpecLine("Schnittstelle", gefundenesProdukt.interface);
+  addSpecLine("Kategorie", gefundenesProdukt.category);
+} else if (gewaehlteKategorie === "coolers") {
+  addSpecLine("Kühlart", gefundenesProdukt.cooling_type);
+  // Hier prüfen wir, ob es eine Radiatorgröße gibt (Luftkühler haben das nicht)
+  if (gefundenesProdukt.radiator_size) {
+    addSpecLine("Grösse dess Radiators", gefundenesProdukt.radiator_size);
+  }
+  addSpecLine("Sockel Kompaktibilität", gefundenesProdukt.socket_compatibility);
+  addSpecLine("Anzahl Lüfter", gefundenesProdukt.fans);
+  addSpecLine("RGB Lüfter?", gefundenesProdukt.rgb);
+}
+
+// Standardmässig immer den Preis auflisten
+addSpecLine("Preis", gefundenesProdukt.price);
+ 
     }
     // --- HIER HÖRT DIE 2. METHODE AUF ---
     
