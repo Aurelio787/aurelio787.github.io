@@ -102,11 +102,15 @@ body {
     display: block;
     margin: 10px auto;
 }
+#AusgewaelterInhalt {
+    top: 30px;
+    left: 10px;
+}
 
 #AusgewaelterInhaltSpecs {
     top: 50px;
     left: 10px;
-    position: fixed;
+    position: relative;
     list-style-type: none;
     padding: 0;
     margin-top: 15px;
