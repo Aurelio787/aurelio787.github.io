@@ -122,6 +122,12 @@ startButton.addEventListener("click", function() {
         addSpecLine("Formfaktor", gefundenesProdukt.form_factor);
         addSpecLine("Farbe", gefundenesProdukt.color);
         addSpecLine("Seitenteil", gefundenesProdukt.side_panel);
+      }else if (gewaehlteKategorie === psu)   {
+        addSpecLine("Anzahl Watt", gefundenesProdukt.wattage);
+        addSpecLine("Modularität(sind die kabel vom Metzteil Abnehmbar?)", gefundenesProdukt.certification);
+        addSpecLine("Form Faktor", gefundenesProdukt.form_factor);
+        addSpecLine("ATX Standart", gefundenesProdukt.atx_standard);
+        addSpecLine("Wielang man das etwa behalten kann", gefundenesProdukt.warranty);
       }
       
       // Standardmässig immer den Preis auflisten

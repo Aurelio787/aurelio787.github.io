@@ -194,7 +194,7 @@
     {"id": "mb-asrock-b550-pro", "type": "Motherboard", "name": "B550 Pro4", "brand": "ASRock", "chipset": "B550", "socket": "AM4", "ramType": "DDR4", "ramSlots": "4", "formFactor": "ATX", "m2Slots": "2", "sataPorts": "6", "specialFeatures": "Umfangreiche Lüftersteuerung, Post Status Checker LEDs integriert", "price": "115"},
     {"id": "mb-asrock-b550-steel", "type": "Motherboard", "name": "B550 Steel Legend", "brand": "ASRock", "chipset": "B550", "socket": "AM4", "ramType": "DDR4", "ramSlots": "4", "formFactor": "ATX", "m2Slots": "2", "sataPorts": "6", "specialFeatures": "Brillante On-Board RGB-Zonen, extrem dicke Dr.MOS MOSFET-Kühlung", "price": "159"}
   ],
-  "power_supplies": [
+  "psu": [
     {"id": "psu-asus-rog-strix-750g", "type": "Powersuply", "name": "ASUS ROG Strix 750W Gold", "brand": "ASUS", "wattage": "750W", "certification": "80+ Gold", "modularity": "Vollmodular", "form_factor": "ATX", "atx_standard": "ATX 2.4", "warranty": "10 Jahre", "price": "115.-"},
     {"id": "psu-asus-rog-strix-850g", "type": "Powersuply", "name": "ASUS ROG Strix 850W Gold", "brand": "ASUS", "wattage": "850W", "certification": "80+ Gold", "modularity": "Vollmodular", "form_factor": "ATX", "atx_standard": "ATX 2.4", "warranty": "10 Jahre", "price": "135.-"},
     {"id": "psu-asus-rog-strix-1000g", "type": "Powersuply", "name": "ASUS ROG Strix 1000W Gold", "brand": "ASUS", "wattage": "1000W", "certification": "80+ Gold", "modularity": "Vollmodular", "form_factor": "ATX", "atx_standard": "ATX 2.4", "warranty": "10 Jahre", "price": "165.-"},
@@ -373,6 +373,33 @@
     {"id": "case-nzxt-h9-flow-black", "type": "Case", "name": "NZXT H9 Flow Black", "brand": "NZXT", "form_factor": "Midi-Tower (Showcase)", "color": "Black", "side_panel": "Tempered Glass", "price": "160.-"},
     {"id": "case-nzxt-h9-flow-white", "type": "Case", "name": "NZXT H9 Flow White", "brand": "NZXT", "form_factor": "Midi-Tower (Showcase)", "color": "White", "side_panel": "Tempered Glass", "price": "160.-"},
     {"id": "case-nzxt-h9-elite-black", "type": "Case", "name": "NZXT H9 Elite Black", "brand": "NZXT", "form_factor": "Midi-Tower (Showcase)", "color": "Black", "side_panel": "Tempered Glass", "price": "180.-"}
+  ],
+  "ssds": [
+    {"id": "ssd-samsung-970-evo-plus", "type": "SSD", "name": "Samsung 970 EVO Plus", "brand": "Samsung", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "Mid-Range NVMe", "price": "75.-"},
+    {"id": "ssd-samsung-970-pro", "type": "SSD", "name": "Samsung 970 PRO", "brand": "Samsung", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "High-End NVMe", "price": "120.-"},
+    {"id": "ssd-samsung-970-evo", "type": "SSD", "name": "Samsung 970 EVO", "brand": "Samsung", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "Mid-Range NVMe", "price": "70.-"},
+    {"id": "ssd-samsung-980", "type": "SSD", "name": "Samsung 980", "brand": "Samsung", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "Entry-Level NVMe", "price": "60.-"},
+    {"id": "ssd-wd-black-sn750", "type": "SSD", "name": "Western Digital WD_BLACK SN750", "brand": "Western Digital", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "Mid-Range NVMe", "price": "80.-"},
+    {"id": "ssd-wd-blue-sn550", "type": "SSD", "name": "Western Digital WD Blue SN550", "brand": "Western Digital", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "Entry-Level NVMe", "price": "50.-"},
+    {"id": "ssd-wd-blue-sn570", "type": "SSD", "name": "Western Digital WD Blue SN570", "brand": "Western Digital", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "Entry-Level NVMe", "price": "55.-"},
+    {"id": "ssd-crucial-p3", "type": "SSD", "name": "Crucial P3", "brand": "Crucial", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "Budget/QLC NVMe", "price": "65.-"},
+    {"id": "ssd-crucial-p5", "type": "SSD", "name": "Crucial P5", "brand": "Crucial", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "Mid-Range NVMe", "price": "90.-"},
+    {"id": "ssd-sk-hynix-gold-p31", "type": "SSD", "name": "SK hynix Gold P31", "brand": "SK hynix", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "High-End NVMe", "price": "85.-"},
+    {"id": "ssd-kingston-a2000", "type": "SSD", "name": "Kingston A2000", "brand": "Kingston", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "Entry-Level NVMe", "price": "55.-"},
+    {"id": "ssd-kingston-kc2000", "type": "SSD", "name": "Kingston KC2000", "brand": "Kingston", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "Mid-Range NVMe", "price": "95.-"},
+    {"id": "ssd-kingston-kc2500", "type": "SSD", "name": "Kingston KC2500", "brand": "Kingston", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "Mid-Range NVMe", "price": "100.-"},
+    {"id": "ssd-kingston-nv1", "type": "SSD", "name": "Kingston NV1", "brand": "Kingston", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "Budget/QLC NVMe", "price": "50.-"},
+    {"id": "ssd-sabrent-rocket-nvme-pcie3", "type": "SSD", "name": "Sabrent Rocket NVMe PCIe 3.0", "brand": "Sabrent", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "Mid-Range NVMe", "price": "70.-"},
+    {"id": "ssd-adata-xpg-sx8200-pro", "type": "SSD", "name": "Adata XPG SX8200 Pro", "brand": "Adata", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "High-End NVMe", "price": "85.-"},
+    {"id": "ssd-lexar-nm620", "type": "SSD", "name": "Lexar NM620", "brand": "Lexar", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "Entry-Level NVMe", "price": "60.-"},
+    {"id": "ssd-sandisk-extreme-m2", "type": "SSD", "name": "SanDisk Extreme M.2 NVMe", "brand": "SanDisk", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "Mid-Range NVMe", "price": "90.-"},
+    {"id": "ssd-kioxia-exceria-nvme", "type": "SSD", "name": "Kioxia Exceria NVMe SSD", "brand": "Kioxia", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "Entry-Level NVMe", "price": "55.-"},
+    {"id": "ssd-teamgroup-mp33", "type": "SSD", "name": "TeamGroup MP33", "brand": "TeamGroup", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "Entry-Level NVMe", "price": "45.-"},
+    {"id": "ssd-teamgroup-mp33-pro", "type": "SSD", "name": "TeamGroup MP33 Pro", "brand": "TeamGroup", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "Entry-Level NVMe", "price": "50.-"},
+    {"id": "ssd-silicon-power-p34a60", "type": "SSD", "name": "Silicon Power P34A60", "brand": "Silicon Power", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "Entry-Level NVMe", "price": "50.-"},
+    {"id": "ssd-silicon-power-p34a80", "type": "SSD", "name": "Silicon Power P34A80", "brand": "Silicon Power", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "High-End NVMe", "price": "80.-"},
+    {"id": "ssd-intenso-top-performance", "type": "SSD", "name": "Intenso Top Performance M.2 NVMe", "brand": "Intenso", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "Entry-Level NVMe", "price": "45.-"},
+    {"id": "ssd-patriot-p300", "type": "SSD", "name": "Patriot P300", "brand": "Patriot", "form_factor": "M.2 2280", "interface": "PCIe 3.0 x4", "category": "Entry-Level NVMe", "price": "48.-"}
   ]
 }
 
