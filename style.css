@@ -104,12 +104,15 @@ body {
 }
 
 #AusgewaelterInhaltSpecs {
-  list-style-type: none;
-  padding: 0;
-  margin-top: 15px;
-  font-size: 1.1rem;
+    top: 50px;
+    left: 10px;
+    position: fixed;
+    list-style-type: none;
+    padding: 0;
+    margin-top: 15px;
+    font-size: 1.1rem;
 }
 
 #AusgewaelterInhaltSpecs li {
-  margin-bottom: 6px;
+    margin-bottom: 6px;
 }
