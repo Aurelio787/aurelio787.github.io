@@ -104,7 +104,8 @@ body {
 }
 #AusgewaelterInhalt {
     top: 30px;
-    left: 10px;
+    left: 10;
+    position: relative;
 }
 
 #AusgewaelterInhaltSpecs {
