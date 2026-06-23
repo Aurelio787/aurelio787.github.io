@@ -114,10 +114,12 @@ startButton.addEventListener("click", function() {
 
       // Je nach Kategorie die spezifischen Eigenschaften anhängen
       if (gewaehlteKategorie === "gpus") {
+        addSpecLine("Marke", gefundenesProdukt.chip_manufacturer);
         addSpecLine("VRAM", gefundenesProdukt.vram);
         addSpecLine("Kühlung", gefundenesProdukt.cooling_type);
         addSpecLine("TDP", gefundenesProdukt.tdp);
         addSpecLine("RGB", gefundenesProdukt.rgb);
+        addSpecLine("Grösse", gefundenesProdukt.size);
       } else if (gewaehlteKategorie === "cases") {
         addSpecLine("Formfaktor", gefundenesProdukt.form_factor);
         addSpecLine("Farbe", gefundenesProdukt.color);
