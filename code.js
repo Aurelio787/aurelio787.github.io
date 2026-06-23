@@ -81,7 +81,7 @@ startButton.addEventListener("click", function() {
 
   if (!gewaehltesModellId || !DB[gewaehlteKategorie]) {
     anzeigeDiv.textContent = "Bitte wähle zuerst ein konkretes Modell aus!";
-    if (specsTitel) specsTitel.textContent = "";
+    if (specsTitel) specsTitel.innerHTML = ""; // Leeres Feld bei Fehler
     if (BauteilBild) BauteilBild.style.display = "none";
     return;
   }
@@ -93,19 +93,41 @@ startButton.addEventListener("click", function() {
     // Haupttext oben
     anzeigeDiv.textContent = "Du hast ausgewählt: " + gefundenesProdukt.name + " für " + gefundenesProdukt.price;
     
-    // Spezifikationen im <h2> auflisten
+    // --- HIER FÄNGT DIE 2. METHODE AN ---
     if (specsTitel) {
-      let specsText = `Spezifikationen: ${gefundenesProdukt.name} | `;
+      // Leere die Liste zuerst, falls vorher etwas drin stand
+      specsTitel.innerHTML = "";
       
+      // Hilfsfunktion zum Erstellen von Listenelementen
+      const addSpecLine = (label, value) => {
+        if (value !== undefined && value !== "") {
+          const li = document.createElement("li");
+          li.innerHTML = `<strong>${label}:</strong> ${value}`;
+          specsTitel.appendChild(li);
+        }
+      };
+
+      // Titel/Produktname als erstes Element hinzufügen
+      const liTitle = document.createElement("li");
+      liTitle.innerHTML = `<strong>Modell:</strong> ${gefundenesProdukt.name}`;
+      specsTitel.appendChild(liTitle);
+
+      // Je nach Kategorie die spezifischen Eigenschaften anhängen
       if (gewaehlteKategorie === "gpus") {
-        specsText += `VRAM: ${gefundenesProdukt.vram} | Kühlung: ${gefundenesProdukt.cooling_type} | TDP: ${gefundenesProdukt.tdp} | RGB: ${gefundenesProdukt.rgb}`;
+        addSpecLine("VRAM", gefundenesProdukt.vram);
+        addSpecLine("Kühlung", gefundenesProdukt.cooling_type);
+        addSpecLine("TDP", gefundenesProdukt.tdp);
+        addSpecLine("RGB", gefundenesProdukt.rgb);
       } else if (gewaehlteKategorie === "cases") {
-        specsText += `Formfaktor: ${gefundenesProdukt.form_factor} | Farbe: ${gefundenesProdukt.color} | Seitenteil: ${gefundenesProdukt.side_panel}`;
-      } else {
-        specsText += `Preis: ${gefundenesProdukt.price}`;
+        addSpecLine("Formfaktor", gefundenesProdukt.form_factor);
+        addSpecLine("Farbe", gefundenesProdukt.color);
+        addSpecLine("Seitenteil", gefundenesProdukt.side_panel);
       }
-      specsTitel.textContent = specsText;
+      
+      // Standardmässig immer den Preis auflisten
+      addSpecLine("Preis", gefundenesProdukt.price);
     }
+    // --- HIER HÖRT DIE 2. METHODE AUF ---
     
     // Bild im Ordner Images/ anzeigen mit Fallback-Sicherung
     if (BauteilBild) {
@@ -121,32 +143,3 @@ startButton.addEventListener("click", function() {
     }
   }
 });
-
-// 5. Button: Speichert die Komponente
-saveButton.addEventListener("click", function() {
-  const gewaehlteKategorie = BauteilAuswahl.value;
-  const gewaehltesModellId = ModellAuswahl.value;
-
-  if (!gewaehltesModellId || !DB[gewaehlteKategorie]) {
-    alert("Bitte wähle zuerst ein Modell aus, das du speichern willst!");
-    return;
-  }
-
-  const kategorieProdukte = DB[gewaehlteKategorie];
-  const gefundenesProdukt = kategorieProdukte.find(item => item.id === gewaehltesModellId);
-
-  if (gefundenesProdukt && BauteileListe) {
-    if (BauteileListe.value === "Liste deiner Komponenten" || 
-        BauteileListe.value === "Liste ihrer Komponenten" || 
-        BauteileListe.value === "Deine ausgewählten Komponenten:") {
-      BauteileListe.value = "";
-    }
-    
-    if (BauteileListe.value.length > 0) {
-      BauteileListe.value += ", ";
-    }
-    
-    BauteileListe.value += gefundenesProdukt.name + " (" + gefundenesProdukt.price + ")";
-  }
-});
-		
