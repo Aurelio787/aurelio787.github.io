@@ -4,6 +4,7 @@ const BauteilAuswahl = document.getElementById("Bauteil");
 const ModellAuswahl = document.getElementById("ModellAuswahl");
 const startButton = document.getElementById("StartButton"); 
 const anzeigeDiv = document.getElementById("AusgewaehlterInhalt");
+const specsTitel = document.getElementById("AusgewaelterInhaltSpecs");
 const BauteilBild = document.getElementById("BauteilBild");
 const BauteileListe = document.getElementById("ListeKomponente");
 const saveButton = document.getElementById("saveComponent");
@@ -32,20 +33,15 @@ function startKonfigurator() {
   });
 }
 
-// 2. Kategorie-Wechsel (HIER WURDE DIE LÖSUNG EINGEBAUT)
-// Sobald eine Kategorie gewählt wird, werden sofort alle Modelle geladen.
-// Das Suchfeld bleibt dadurch freiwillig.
+// 2. Kategorie-Wechsel (Modelle werden sofort geladen, Suche ist freiwillig)
 BauteilAuswahl.addEventListener("change", function() {
   const gewaehlteKategorie = BauteilAuswahl.value;
   
-  // Suchfeld bei Kategoriewechsel leeren, damit die Liste nicht versteckt bleibt
   if (suchLeiste) suchLeiste.value = "";
-
   ModellAuswahl.innerHTML = '<option value="">-- Modell wählen --</option>';
 
   if (!gewaehlteKategorie || !DB[gewaehlteKategorie]) return;
 
-  // Füllt das Dropdown direkt mit allen Produkten dieser Kategorie
   DB[gewaehlteKategorie].forEach((item) => {
     const option = document.createElement("option");
     option.value = item.id; 
@@ -55,7 +51,6 @@ BauteilAuswahl.addEventListener("change", function() {
 });
 
 // 3. Such-Logik (Freiwillig als Hilfestellung)
-// Filtert nur, wenn etwas in die Suchleiste eingetippt wird
 if (suchLeiste) {
   suchLeiste.addEventListener("input", function() {
     const suchBegriff = suchLeiste.value.toLowerCase();
@@ -68,7 +63,6 @@ if (suchLeiste) {
       item.name.toLowerCase().includes(suchBegriff)
     );
 
-    // Dropdown leeren und mit den gefilterten Ergebnissen befüllen
     ModellAuswahl.innerHTML = '<option value="">-- Modell wählen --</option>';
     
     gefilterteProdukte.forEach((item) => {
@@ -80,13 +74,14 @@ if (suchLeiste) {
   });
 }
 
-// 4. Button: Zeigt Info-Text und Bauteil-Bild an
+// 4. Button: Zeigt Info-Text, Bild und Spezifikationen an
 startButton.addEventListener("click", function() {
   const gewaehlteKategorie = BauteilAuswahl.value;
   const gewaehltesModellId = ModellAuswahl.value;
 
   if (!gewaehltesModellId || !DB[gewaehlteKategorie]) {
     anzeigeDiv.textContent = "Bitte wähle zuerst ein konkretes Modell aus!";
+    if (specsTitel) specsTitel.innerHTML = ""; // Leeres Feld bei Fehler
     if (BauteilBild) BauteilBild.style.display = "none";
     return;
   }
@@ -95,9 +90,90 @@ startButton.addEventListener("click", function() {
   const gefundenesProdukt = kategorieProdukte.find(item => item.id === gewaehltesModellId);
 
   if (gefundenesProdukt) {
+    // Haupttext oben
     anzeigeDiv.textContent = "Du hast ausgewählt: " + gefundenesProdukt.name + " für " + gefundenesProdukt.price;
     
+    // --- HIER FÄNGT DIE 2. METHODE AN ---
+    if (specsTitel) {
+      // Leere die Liste zuerst, falls vorher etwas drin stand
+      specsTitel.innerHTML = "";
+      
+      // Hilfsfunktion zum Erstellen von Listenelementen
+      const addSpecLine = (label, value) => {
+        if (value !== undefined && value !== "") {
+          const li = document.createElement("li");
+          li.innerHTML = `<strong>${label}:</strong> ${value}`;
+          specsTitel.appendChild(li);
+        }
+      };
+
+      // Titel/Produktname als erstes Element hinzufügen
+      const liTitle = document.createElement("li");
+      liTitle.innerHTML = `<strong>Modell:</strong> ${gefundenesProdukt.name}`;
+      specsTitel.appendChild(liTitle);
+
+      // Je nach Kategorie die spezifischen Eigenschaften anhängen
+      if (gewaehlteKategorie === "gpus") {
+  addSpecLine("Marke", gefundenesProdukt.chip_manufacturer);
+  addSpecLine("VRAM", gefundenesProdukt.vram);
+  addSpecLine("Kühlung", gefundenesProdukt.cooling_type);
+  addSpecLine("TDP", gefundenesProdukt.tdp);
+  addSpecLine("RGB", gefundenesProdukt.rgb);
+  addSpecLine("Grösse", gefundenesProdukt.size);
+} else if (gewaehlteKategorie === "cases") {
+  addSpecLine("Formfaktor", gefundenesProdukt.form_factor);
+  addSpecLine("Farbe", gefundenesProdukt.color);
+  addSpecLine("Seitenteil", gefundenesProdukt.side_panel);
+} else if (gewaehlteKategorie === "psu") {
+  addSpecLine("Anzahl Watt", gefundenesProdukt.wattage);
+  addSpecLine("Sind die Kabel abnehmbar", gefundenesProdukt.certification);
+  addSpecLine("Form Faktor", gefundenesProdukt.form_factor);
+  addSpecLine("ATX Standart", gefundenesProdukt.atx_standard);
+  addSpecLine("warscheinliche Upgrade sicherheit", gefundenesProdukt.warranty);
+} else if (gewaehlteKategorie === "cpus") {
+  addSpecLine("Sockel", gefundenesProdukt.socket);
+  addSpecLine("RAM Kattegorie", gefundenesProdukt.ram);        
+  addSpecLine("Rating", gefundenesProdukt.rating);
+  addSpecLine("Cinebench 24 Singlecore Punktzahl", gefundenesProdukt.cinebench24single);
+  addSpecLine("Cinebench 24 Multicore Punktzahl", gefundenesProdukt.cinebench24multi);
+  addSpecLine("azahl Kerne", gefundenesProdukt.cores);
+  addSpecLine("Standart TDP", gefundenesProdukt.tdpnormal);
+  addSpecLine("Boost TDP", gefundenesProdukt.tdpboost);
+  addSpecLine("L3 Cache", gefundenesProdukt.L3cache);
+} else if (gewaehlteKategorie === "motherboards") {
+  addSpecLine("Chip Satz", gefundenesProdukt.chipset);
+  addSpecLine("Sockel", gefundenesProdukt.socket);
+  addSpecLine("RAM", gefundenesProdukt.ramType);
+  addSpecLine("Anzahl RAM Bänke", gefundenesProdukt.ramSlots);
+  addSpecLine("Form Faktor", gefundenesProdukt.formFactor);
+  addSpecLine("Anzahl M.2 Slots", gefundenesProdukt.m2Slots);
+  addSpecLine("Anzahl Sata Steckplätze", gefundenesProdukt.sataPorts);
+  addSpecLine("Spezielle eigenschaften", gefundenesProdukt.specialFeatures);
+} else if (gewaehlteKategorie === "ssds") {
+  addSpecLine("Form Faktor", gefundenesProdukt.form_factor);
+  addSpecLine("Schnittstelle", gefundenesProdukt.interface);
+  addSpecLine("Kategorie", gefundenesProdukt.category);
+} else if (gewaehlteKategorie === "coolers") {
+  addSpecLine("Kühlart", gefundenesProdukt.cooling_type);
+  // Hier prüfen wir, ob es eine Radiatorgröße gibt (Luftkühler haben das nicht)
+  if (gefundenesProdukt.radiator_size) {
+    addSpecLine("Grösse dess Radiators", gefundenesProdukt.radiator_size);
+  }
+  addSpecLine("Sockel Kompaktibilität", gefundenesProdukt.socket_compatibility);
+  addSpecLine("Anzahl Lüfter", gefundenesProdukt.fans);
+  addSpecLine("RGB Lüfter?", gefundenesProdukt.rgb);
+}
+
+// Standardmässig immer den Preis auflisten
+addSpecLine("Preis", gefundenesProdukt.price);
+ 
+    }
+    // --- HIER HÖRT DIE 2. METHODE AUF ---
+    
+    // Bild im Ordner Images/ anzeigen mit Fallback-Sicherung
     if (BauteilBild) {
+      BauteilBild.onerror = () => { BauteilBild.src = 'Images/placeholder.jpg'; };
+      
       if (gewaehlteKategorie === "cpus") {
         const sockelName = gefundenesProdukt.socket.toLowerCase();
         BauteilBild.src = `Images/sockel-${sockelName}.jpg`;
@@ -108,13 +184,12 @@ startButton.addEventListener("click", function() {
     }
   }
 });
-
 // 5. Button: Speichert die Komponente
 saveButton.addEventListener("click", function() {
   const gewaehlteKategorie = BauteilAuswahl.value;
   const gewaehltesModellId = ModellAuswahl.value;
 
-  if (!gewaehltesModellId) {
+  if (!gewaehltesModellId || !DB[gewaehlteKategorie]) {
     alert("Bitte wähle zuerst ein Modell aus, das du speichern willst!");
     return;
   }
@@ -123,16 +198,19 @@ saveButton.addEventListener("click", function() {
   const gefundenesProdukt = kategorieProdukte.find(item => item.id === gewaehltesModellId);
 
   if (gefundenesProdukt && BauteileListe) {
-    if (BauteileListe.value === "Liste deiner Komponenten" || 
-        BauteileListe.value === "Liste ihrer Komponenten" || 
-        BauteileListe.value === "Deine ausgewählten Komponenten:") {
+    // Voreingestellten Text im Textfeld beim ersten Speichern leeren
+    const aktuellerText = BauteileListe.value.trim();
+    if (
+      aktuellerText === "Liste deiner Komponenten" || 
+      aktuellerText === "Liste ihrer Komponenten" || 
+      aktuellerText === "Deine ausgewählten Komponenten:"
+    ) {
       BauteileListe.value = "";
     }
     
-    if (BauteileListe.value.length > 0) {
-      BauteileListe.value += ", ";
-    }
+    // Komma als Trennzeichen hinzufügen, wenn schon etwas in der Liste steht
+    const trenner = BauteileListe.value.length > 0 ? ", " : "";
     
-    BauteileListe.value += gefundenesProdukt.name + " (" + gefundenesProdukt.price + ")";
+    BauteileListe.value += `${trenner}${gefundenesProdukt.name} (${gefundenesProdukt.price})`;
   }
 });
