@@ -311,7 +311,7 @@ body {
     display: block;
 }
 #ListeKomponenten {
-    font-size: 16px;
+    font-size: 160px;
     background-color: var(--base-variant);
     color: var(--text-color);
     position: fixed;
