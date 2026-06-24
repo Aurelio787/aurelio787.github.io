@@ -184,3 +184,33 @@ addSpecLine("Preis", gefundenesProdukt.price);
     }
   }
 });
+// 5. Button: Speichert die Komponente
+saveButton.addEventListener("click", function() {
+  const gewaehlteKategorie = BauteilAuswahl.value;
+  const gewaehltesModellId = ModellAuswahl.value;
+
+  if (!gewaehltesModellId || !DB[gewaehlteKategorie]) {
+    alert("Bitte wähle zuerst ein Modell aus, das du speichern willst!");
+    return;
+  }
+
+  const kategorieProdukte = DB[gewaehlteKategorie];
+  const gefundenesProdukt = kategorieProdukte.find(item => item.id === gewaehltesModellId);
+
+  if (gefundenesProdukt && BauteileListe) {
+    // Voreingestellten Text im Textfeld beim ersten Speichern leeren
+    const aktuellerText = BauteileListe.value.trim();
+    if (
+      aktuellerText === "Liste deiner Komponenten" || 
+      aktuellerText === "Liste ihrer Komponenten" || 
+      aktuellerText === "Deine ausgewählten Komponenten:"
+    ) {
+      BauteileListe.value = "";
+    }
+    
+    // Komma als Trennzeichen hinzufügen, wenn schon etwas in der Liste steht
+    const trenner = BauteileListe.value.length > 0 ? ", " : "";
+    
+    BauteileListe.value += `${trenner}${gefundenesProdukt.name} (${gefundenesProdukt.price})`;
+  }
+});
