@@ -316,7 +316,7 @@ body {
     color: var(--text-color);
     position: fixed;
     top: 50%;
-    left: 0px;
+    left: 10px;
     text-size-adjust: 20px;
 }
 
@@ -331,13 +331,13 @@ body {
 }
 #AusgewaelterInhalt {
     margin-top: 30px;
-    margin-left: 10;
+    margin-left: 10px;
     position: relative;
 }
 
 #AusgewaelterInhaltSpecs {
     margin-top: 100px;
-    margin-left: 10px;
+    margin-right: 10px;
     position: relative;
     list-style-type: none;
     padding: 0;
