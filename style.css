@@ -95,13 +95,15 @@ body {
 }
 
 #BauteilBild {
-    width: 150px;
+    width: 300px;
     height: auto;
     max-width: 300px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     display: block;
     margin: 10px auto;
+    position: relative;
+    margin-top: 20px;
 }
 
 #AusgewaehlterInhalt {
@@ -114,7 +116,33 @@ body {
 #saveComponent {
     position: relative;
     font-size: medium;
-    background-color: var(--base-color);
+    background-color: var(--primary-color);
 }
 
 
+#BildUndSpecsContainer {
+    display: flex;
+    align-items: center; /* Zentriert die Elemente vertikal auf gleicher Höhe */
+    gap: 30px;           /* Abstand zwischen dem Bild und der Spezifikations-Liste */
+    margin-top: 20px;    /* Abstand nach oben, damit es nicht am Haupttext klebt */
+}
+
+#BauteilBild {
+    width: 300px;
+    height: auto;
+    max-width: 300px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    /* margin: 10px auto; wird durch Flexbox im Container gesteuert */
+}
+
+#AusgewaelterInhaltSpecs {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;           /* Setze margins für die Liste im Flex-Container zurück */
+    font-size: 1.1rem;
+}
+
+#AusgewaelterInhaltSpecs li {
+    margin-bottom: 6px;
+}

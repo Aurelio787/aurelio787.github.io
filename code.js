@@ -227,6 +227,18 @@ saveButton.addEventListener("click", function() {
     
     BauteileListe.value += `${trenner}${gefundenesProdukt.name} (${gefundenesProdukt.price})`;
   }
+  if (BauteilBild) {
+    BauteilBild.onerror = () => { BauteilBild.src = 'Images/placeholder.jpg'; };
+    
+    if (gewaehlteKategorie === "cpus") {
+      const sockelName = gefundenesProdukt.socket.toLowerCase();
+      BauteilBild.src = `Images/sockel-${sockelName}.jpg`;
+    } else {
+      BauteilBild.src = `Images/${gefundenesProdukt.id}.jpg`;
+    }
+    // Das Bild wird sichtbar gemacht (flexbox übernimmt die Anordnung)
+    BauteilBild.style.display = "block"; 
+}
 });
 const resetButton = document.getElementById("resetButton");
 
