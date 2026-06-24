@@ -114,7 +114,7 @@ body {
 #saveComponent {
     position: relative;
     font-size: medium;
-    color: var(--text-color);
+    background-color: var(--base-color);
 }
 
 
