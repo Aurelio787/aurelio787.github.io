@@ -12,6 +12,17 @@ const suchLeiste = document.getElementById("SuchLeiste");
 
 let DB; 
 
+// 1.5 Beim Laden der Seite prüfen, ob bereits gespeicherte Komponenten existieren
+document.addEventListener("DOMContentLoaded", function() {
+  const gespeicherteListe = localStorage.getItem("gespeicherteKomponenten");
+  const BauteileListe = document.getElementById("ListeKomponente");
+  
+  // Wenn etwas im Speicher gefunden wird und die Textbox existiert, dort einfügen
+  if (gespeicherteListe && BauteileListe) {
+    BauteileListe.value = gespeicherteListe;
+  }
+});
+
 // 1. Daten laden
 fetch('./Datenbank.json')
   .then((response) => response.json())
@@ -210,7 +221,21 @@ saveButton.addEventListener("click", function() {
     
     // Komma als Trennzeichen hinzufügen, wenn schon etwas in der Liste steht
     const trenner = BauteileListe.value.length > 0 ? ", " : "";
+
+    // ---- HIER NEU: Den aktuellen Inhalt in den Browser-Speicher schreiben ----
+    localStorage.setItem("gespeicherteKomponenten", BauteileListe.value);
     
     BauteileListe.value += `${trenner}${gefundenesProdukt.name} (${gefundenesProdukt.price})`;
   }
 });
+const resetButton = document.getElementById("resetButton");
+
+if (resetButton) {
+  resetButton.addEventListener("click", function() {
+    if (BauteileListe) {
+      BauteileListe.value = ""; // Textfeld leeren
+    }
+    localStorage.removeItem("gespeicherteKomponenten"); // Speicher im Browser löschen
+    alert("Die Komponenten-Liste wurde geleert.");
+  });
+}
