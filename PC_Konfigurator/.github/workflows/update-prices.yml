@@ -1,0 +1,38 @@
+name: Preise aktualisieren
+
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  preise-updaten:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Repository herunterladen
+        uses: actions/checkout@v4
+
+      - name: Python installieren
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Bibliotheken installieren
+        run: pip install requests
+
+      - name: Preise abrufen
+        run: python update_prices.py
+
+      - name: Aenderungen speichern
+        run: |
+          git config user.name "Preis-Bot"
+          git config user.email "bot@preise.auto"
+          git add PC_Konfigurator/Datenbank.json
+          if git diff --staged --quiet; then
+            echo "Keine Aenderungen"
+          else
+            git commit -m "Preise aktualisiert ($(date '+%d.%m.%Y'))"
+            git push
+          fi
