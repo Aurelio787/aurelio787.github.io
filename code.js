@@ -192,7 +192,7 @@ addSpecLine("Preis", gefundenesProdukt.price);
     
     // Bild im Ordner Images/ anzeigen mit Fallback-Sicherung
     if (BauteilBild) {
-      BauteilBild.onerror = () => { BauteilBild.src = 'Images/placeholder.jpg'; };
+      setzeBildFallback(BauteilBild);
       
       if (gewaehlteKategorie === "cpus") {
         const sockelName = gefundenesProdukt.socket.toLowerCase();
@@ -205,6 +205,12 @@ addSpecLine("Preis", gefundenesProdukt.price);
   }
 });
 // 5. Hilfsfunktionen für Build-Prüfung
+const BILD_FALLBACK = "data:image/svg+xml;base64," + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200"><rect width="300" height="200" fill="#e0e0e0" rx="8"/><text x="150" y="100" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-size="14" fill="#999">Kein Bild</text></svg>');
+
+function setzeBildFallback(img) {
+  img.onerror = () => { img.onerror = null; img.src = BILD_FALLBACK; };
+}
+
 function ladeSturkturierteDaten() {
   try {
     return JSON.parse(localStorage.getItem("gespeicherteKomponentenDaten") || "[]");
@@ -385,7 +391,7 @@ saveButton.addEventListener("click", function() {
   localStorage.setItem("gespeicherteKomponentenDaten", JSON.stringify(gespeicherteDaten));
 
   if (BauteilBild) {
-    BauteilBild.onerror = () => { BauteilBild.src = "Images/placeholder.jpg"; };
+    setzeBildFallback(BauteilBild);
     if (gewaehlteKategorie === "cpus") {
       BauteilBild.src = `Images/sockel-${gefundenesProdukt.socket.toLowerCase()}.jpg`;
     } else {
