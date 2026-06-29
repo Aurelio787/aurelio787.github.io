@@ -166,13 +166,22 @@ startButton.addEventListener("click", function() {
   addSpecLine("Kategorie", gefundenesProdukt.category);
 } else if (gewaehlteKategorie === "coolers") {
   addSpecLine("Kühlart", gefundenesProdukt.cooling_type);
-  // Hier prüfen wir, ob es eine Radiatorgröße gibt (Luftkühler haben das nicht)
   if (gefundenesProdukt.radiator_size) {
     addSpecLine("Grösse dess Radiators", gefundenesProdukt.radiator_size);
   }
   addSpecLine("Sockel Kompaktibilität", gefundenesProdukt.socket_compatibility);
   addSpecLine("Anzahl Lüfter", gefundenesProdukt.fans);
   addSpecLine("RGB Lüfter?", gefundenesProdukt.rgb);
+} else if (gewaehlteKategorie === "rams") {
+  addSpecLine("Marke", gefundenesProdukt.brand);
+  addSpecLine("RAM-Typ", gefundenesProdukt.ram_type);
+  addSpecLine("Geschwindigkeit", gefundenesProdukt.speed + " MHz");
+  addSpecLine("Kapazität", gefundenesProdukt.capacity + " GB");
+  addSpecLine("Module", gefundenesProdukt.modules);
+  addSpecLine("CAS-Latenz", gefundenesProdukt.cas_latency);
+  addSpecLine("Spannung", gefundenesProdukt.voltage);
+  addSpecLine("RGB", gefundenesProdukt.rgb);
+  addSpecLine("Formfaktor", gefundenesProdukt.form_factor);
 }
 
 // Standardmässig immer den Preis auflisten
@@ -281,6 +290,101 @@ function pruefeKompatibilitaet(neueKategorie, neuesProdukt, gespeicherte) {
         });
       }
     });
+  }
+
+  // --- RAM ↔ CPU: RAM-Typ ---
+  const gespeicherteRAMs = gespeicherte.filter(k => k.kategorie === "rams");
+
+  if (neueKategorie === "rams") {
+    gespeicherteCPUs.forEach(cpu => {
+      const cpuRam = cpu.daten.ram || "";
+      const ramTyp = neuesProdukt.ram_type || "";
+      if (ramTyp && !cpuRam.includes(ramTyp)) {
+        const vorschlaege = (DB.rams || [])
+          .filter(r => cpuRam.includes(r.ram_type))
+          .slice(0, 3)
+          .map(r => `${r.name} (${r.ram_type})`);
+        fehler.push({
+          meldung: `RAM-Konflikt: Dein RAM ist ${ramTyp}, aber die CPU "${cpu.daten.name}" unterstützt nur ${cpuRam}.`,
+          vorschlaege
+        });
+      }
+    });
+  }
+  if (neueKategorie === "cpus") {
+    gespeicherteRAMs.forEach(ram => {
+      const cpuRam = neuesProdukt.ram || "";
+      const ramTyp = ram.daten.ram_type || "";
+      if (ramTyp && !cpuRam.includes(ramTyp)) {
+        const vorschlaege = (DB.rams || [])
+          .filter(r => cpuRam.includes(r.ram_type))
+          .slice(0, 3)
+          .map(r => `${r.name} (${r.ram_type})`);
+        fehler.push({
+          meldung: `RAM-Konflikt: Dein gespeicherter RAM ist ${ramTyp}, aber die CPU "${neuesProdukt.name}" unterstützt nur ${cpuRam}.`,
+          vorschlaege
+        });
+      }
+    });
+  }
+
+  // --- RAM ↔ Mainboard: RAM-Typ ---
+  if (neueKategorie === "rams") {
+    gespeicherteMBs.forEach(mb => {
+      const mbRam = mb.daten.ramType || "";
+      const ramTyp = neuesProdukt.ram_type || "";
+      if (ramTyp && mbRam && ramTyp !== mbRam) {
+        const vorschlaege = (DB.rams || [])
+          .filter(r => r.ram_type === mbRam)
+          .slice(0, 3)
+          .map(r => `${r.name} (${r.ram_type})`);
+        fehler.push({
+          meldung: `RAM-Konflikt: Dein RAM ist ${ramTyp}, aber das Mainboard "${mb.daten.name}" hat ${mbRam}-Slots.`,
+          vorschlaege
+        });
+      }
+    });
+  }
+  if (neueKategorie === "motherboards") {
+    gespeicherteRAMs.forEach(ram => {
+      const mbRam = neuesProdukt.ramType || "";
+      const ramTyp = ram.daten.ram_type || "";
+      if (ramTyp && mbRam && ramTyp !== mbRam) {
+        const vorschlaege = (DB.rams || [])
+          .filter(r => r.ram_type === mbRam)
+          .slice(0, 3)
+          .map(r => `${r.name} (${r.ram_type})`);
+        fehler.push({
+          meldung: `RAM-Konflikt: Dein gespeicherter RAM ist ${ramTyp}, aber das Mainboard "${neuesProdukt.name}" hat ${mbRam}-Slots.`,
+          vorschlaege
+        });
+      }
+    });
+  }
+
+  // --- RAM-Slot-Overflow ---
+  if (neueKategorie === "rams" && gespeicherteMBs.length > 0) {
+    gespeicherteMBs.forEach(mb => {
+      const maxSlots = parseInt(mb.daten.ramSlots) || 4;
+      const belegteSlots = gespeicherteRAMs.reduce((sum, r) => sum + (r.daten.dimms || 1), 0);
+      const neueSlots = neuesProdukt.dimms || 1;
+      if (belegteSlots + neueSlots > maxSlots) {
+        fehler.push({
+          meldung: `Zu viele RAM-Module: Das Mainboard "${mb.daten.name}" hat nur ${maxSlots} RAM-Slots, aber insgesamt ${belegteSlots + neueSlots} Module würden verbaut.`,
+          vorschlaege: []
+        });
+      }
+    });
+  }
+  if (neueKategorie === "motherboards") {
+    const maxSlots = parseInt(neuesProdukt.ramSlots) || 4;
+    const belegteSlots = gespeicherteRAMs.reduce((sum, r) => sum + (r.daten.dimms || 1), 0);
+    if (belegteSlots > maxSlots) {
+      fehler.push({
+        meldung: `Zu viele RAM-Module: Dieses Mainboard hat ${maxSlots} RAM-Slots, aber du hast bereits ${belegteSlots} RAM-Module gespeichert.`,
+        vorschlaege: []
+      });
+    }
   }
 
   // --- CPU ↔ Kühler: Sockel-Kompatibilität ---
