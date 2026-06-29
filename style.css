@@ -146,3 +146,64 @@ body {
 #AusgewaelterInhaltSpecs li {
     margin-bottom: 6px;
 }
+
+#KompatibilitaetsFehler {
+    background-color: #fff3cd;
+    border: 2px solid #e67e00;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 1rem;
+    color: #5a3800;
+}
+
+.darkmode #KompatibilitaetsFehler {
+    background-color: #3a2800;
+    border-color: #ffaa00;
+    color: #ffd080;
+}
+
+#KompatibilitaetsFehler h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.1rem;
+    color: #b84800;
+}
+
+.darkmode #KompatibilitaetsFehler h3 {
+    color: #ffaa00;
+}
+
+#KompatibilitaetsFehler .fehler-eintrag {
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e6b800;
+}
+
+.darkmode #KompatibilitaetsFehler .fehler-eintrag {
+    border-bottom-color: #7a5800;
+}
+
+#KompatibilitaetsFehler .fehler-eintrag:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+#KompatibilitaetsFehler .fehler-meldung {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#KompatibilitaetsFehler .fehler-vorschlaege {
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+#KompatibilitaetsFehler .fehler-vorschlaege ul {
+    margin: 4px 0 0 0;
+    padding-left: 20px;
+}
+
+#KompatibilitaetsFehler .fehler-vorschlaege li {
+    margin-bottom: 2px;
+}
