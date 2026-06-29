@@ -207,3 +207,43 @@ body {
 #KompatibilitaetsFehler .fehler-vorschlaege li {
     margin-bottom: 2px;
 }
+
+#buildPruefenButton {
+    padding: 6px 12px;
+    font-size: 16px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 8px;
+}
+
+#BuildErgebnis {
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 1rem;
+}
+
+#BuildErgebnis.kompatibel {
+    background-color: #d4edda;
+    border: 2px solid #28a745;
+    color: #155724;
+}
+
+#BuildErgebnis.inkompatibel {
+    display: none;
+}
+
+.darkmode #BuildErgebnis.kompatibel {
+    background-color: #1a3a22;
+    border-color: #28a745;
+    color: #7fff9a;
+}
+
+#BuildErgebnis .preis-gesamt {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-top: 8px;
+}

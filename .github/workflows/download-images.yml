@@ -1,0 +1,42 @@
+name: Produktbilder herunterladen
+
+on:
+  workflow_dispatch:       # Manuell ausführbar über GitHub Actions Tab
+  push:
+    paths:
+      - "Datenbank.json"   # Automatisch bei neuen Komponenten
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Abhängigkeiten installieren
+        run: pip install ddgs requests
+
+      - name: Bilder herunterladen
+        run: python download_images.py
+        continue-on-error: true   # Nicht abbrechen wenn einzelne Bilder fehlen
+
+      - name: Neue Bilder committen
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Images/
+          if git diff --cached --quiet; then
+            echo "Keine neuen Bilder."
+          else
+            COUNT=$(git diff --cached --name-only | wc -l)
+            git commit -m "Produktbilder automatisch heruntergeladen ($COUNT neue Bilder)"
+            git push
+          fi

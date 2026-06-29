@@ -204,7 +204,7 @@ addSpecLine("Preis", gefundenesProdukt.price);
     }
   }
 });
-// 5. Inkompatibilitätsprüfung
+// 5. Hilfsfunktionen für Build-Prüfung
 function ladeSturkturierteDaten() {
   try {
     return JSON.parse(localStorage.getItem("gespeicherteKomponentenDaten") || "[]");
@@ -213,242 +213,128 @@ function ladeSturkturierteDaten() {
   }
 }
 
-function pruefeKompatibilitaet(neueKategorie, neuesProdukt, gespeicherte) {
+function parsePreis(preisString) {
+  if (!preisString) return 0;
+  const cleaned = String(preisString).replace(/[^0-9]/g, "");
+  const num = parseInt(cleaned, 10);
+  return isNaN(num) ? 0 : num;
+}
+
+function pruefeAlleKompatibilitaeten(gespeicherte) {
   const fehler = [];
+  const cpus    = gespeicherte.filter(k => k.kategorie === "cpus");
+  const mbs     = gespeicherte.filter(k => k.kategorie === "motherboards");
+  const rams    = gespeicherte.filter(k => k.kategorie === "rams");
+  const kuehler = gespeicherte.filter(k => k.kategorie === "coolers");
 
-  const gespeicherteCPUs = gespeicherte.filter(k => k.kategorie === "cpus");
-  const gespeicherteMBs  = gespeicherte.filter(k => k.kategorie === "motherboards");
-  const gespeicherteKuehler = gespeicherte.filter(k => k.kategorie === "coolers");
-
-  // --- Mehr als eine CPU ---
-  if (neueKategorie === "cpus" && gespeicherteCPUs.length >= 1) {
-    fehler.push({
-      meldung: "Du hast bereits eine CPU gespeichert. Standard-Mainboards haben nur einen CPU-Sockel.",
-      vorschlaege: []
-    });
+  // Mehr als eine CPU
+  if (cpus.length > 1) {
+    fehler.push({ meldung: `Du hast ${cpus.length} CPUs gespeichert. Standard-Mainboards haben nur einen CPU-Sockel.`, vorschlaege: [] });
   }
 
-  // --- CPU ↔ Mainboard: Sockel-Kompatibilität ---
-  if (neueKategorie === "cpus") {
-    gespeicherteMBs.forEach(mb => {
-      if (mb.daten.socket !== neuesProdukt.socket) {
-        const vorschlaege = (DB.motherboards || [])
-          .filter(m => m.socket === neuesProdukt.socket)
-          .slice(0, 3)
-          .map(m => `${m.name} (Sockel ${m.socket})`);
-        fehler.push({
-          meldung: `Sockel-Konflikt: Deine CPU hat Sockel "${neuesProdukt.socket}", aber das gespeicherte Mainboard "${mb.daten.name}" hat Sockel "${mb.daten.socket}".`,
-          vorschlaege
-        });
+  // CPU ↔ Mainboard: Sockel
+  cpus.forEach(cpu => {
+    mbs.forEach(mb => {
+      if (cpu.daten.socket !== mb.daten.socket) {
+        const vorschlaege = (DB.motherboards || []).filter(m => m.socket === cpu.daten.socket).slice(0, 3).map(m => `${m.name} (Sockel ${m.socket})`);
+        fehler.push({ meldung: `Sockel-Konflikt: CPU "${cpu.daten.name}" (${cpu.daten.socket}) passt nicht zu Mainboard "${mb.daten.name}" (${mb.daten.socket}).`, vorschlaege });
       }
     });
-  }
-  if (neueKategorie === "motherboards") {
-    gespeicherteCPUs.forEach(cpu => {
-      if (cpu.daten.socket !== neuesProdukt.socket) {
-        const vorschlaege = (DB.motherboards || [])
-          .filter(m => m.socket === cpu.daten.socket)
-          .slice(0, 3)
-          .map(m => `${m.name} (Sockel ${m.socket})`);
-        fehler.push({
-          meldung: `Sockel-Konflikt: Dein Mainboard hat Sockel "${neuesProdukt.socket}", aber die gespeicherte CPU "${cpu.daten.name}" hat Sockel "${cpu.daten.socket}".`,
-          vorschlaege
-        });
-      }
-    });
-  }
+  });
 
-  // --- CPU ↔ Mainboard: RAM-Typ-Kompatibilität ---
-  if (neueKategorie === "cpus") {
-    gespeicherteMBs.forEach(mb => {
-      const cpuRam = neuesProdukt.ram || "";
+  // CPU ↔ Mainboard: RAM-Typ
+  cpus.forEach(cpu => {
+    mbs.forEach(mb => {
+      const cpuRam = cpu.daten.ram || "";
       const mbRam  = mb.daten.ramType || "";
       if (mbRam && !cpuRam.includes(mbRam)) {
-        const vorschlaege = (DB.motherboards || [])
-          .filter(m => m.socket === neuesProdukt.socket && cpuRam.includes(m.ramType))
-          .slice(0, 3)
-          .map(m => `${m.name} (${m.ramType})`);
-        fehler.push({
-          meldung: `RAM-Konflikt: Deine CPU unterstützt "${cpuRam}", aber das gespeicherte Mainboard "${mb.daten.name}" hat ${mbRam}-Slots.`,
-          vorschlaege
-        });
+        const vorschlaege = (DB.motherboards || []).filter(m => m.socket === cpu.daten.socket && cpuRam.includes(m.ramType)).slice(0, 3).map(m => `${m.name} (${m.ramType})`);
+        fehler.push({ meldung: `RAM-Konflikt: CPU "${cpu.daten.name}" unterstützt ${cpuRam}, aber Mainboard "${mb.daten.name}" hat ${mbRam}-Slots.`, vorschlaege });
       }
     });
-  }
-  if (neueKategorie === "motherboards") {
-    gespeicherteCPUs.forEach(cpu => {
-      const cpuRam = cpu.daten.ram || "";
-      const mbRam  = neuesProdukt.ramType || "";
-      if (cpuRam && !cpuRam.includes(mbRam)) {
-        const vorschlaege = (DB.motherboards || [])
-          .filter(m => m.socket === cpu.daten.socket && cpuRam.includes(m.ramType))
-          .slice(0, 3)
-          .map(m => `${m.name} (${m.ramType})`);
-        fehler.push({
-          meldung: `RAM-Konflikt: Das Mainboard hat ${mbRam}-Slots, aber die gespeicherte CPU "${cpu.daten.name}" unterstützt nur "${cpuRam}".`,
-          vorschlaege
-        });
-      }
-    });
-  }
+  });
 
-  // --- RAM ↔ CPU: RAM-Typ ---
-  const gespeicherteRAMs = gespeicherte.filter(k => k.kategorie === "rams");
-
-  if (neueKategorie === "rams") {
-    gespeicherteCPUs.forEach(cpu => {
+  // RAM ↔ CPU: RAM-Typ
+  rams.forEach(ram => {
+    cpus.forEach(cpu => {
       const cpuRam = cpu.daten.ram || "";
-      const ramTyp = neuesProdukt.ram_type || "";
-      if (ramTyp && !cpuRam.includes(ramTyp)) {
-        const vorschlaege = (DB.rams || [])
-          .filter(r => cpuRam.includes(r.ram_type))
-          .slice(0, 3)
-          .map(r => `${r.name} (${r.ram_type})`);
-        fehler.push({
-          meldung: `RAM-Konflikt: Dein RAM ist ${ramTyp}, aber die CPU "${cpu.daten.name}" unterstützt nur ${cpuRam}.`,
-          vorschlaege
-        });
-      }
-    });
-  }
-  if (neueKategorie === "cpus") {
-    gespeicherteRAMs.forEach(ram => {
-      const cpuRam = neuesProdukt.ram || "";
       const ramTyp = ram.daten.ram_type || "";
       if (ramTyp && !cpuRam.includes(ramTyp)) {
-        const vorschlaege = (DB.rams || [])
-          .filter(r => cpuRam.includes(r.ram_type))
-          .slice(0, 3)
-          .map(r => `${r.name} (${r.ram_type})`);
-        fehler.push({
-          meldung: `RAM-Konflikt: Dein gespeicherter RAM ist ${ramTyp}, aber die CPU "${neuesProdukt.name}" unterstützt nur ${cpuRam}.`,
-          vorschlaege
-        });
+        const vorschlaege = (DB.rams || []).filter(r => cpuRam.includes(r.ram_type)).slice(0, 3).map(r => `${r.name} (${r.ram_type})`);
+        fehler.push({ meldung: `RAM-Konflikt: RAM "${ram.daten.name}" (${ramTyp}) ist nicht kompatibel mit CPU "${cpu.daten.name}" (unterstützt ${cpuRam}).`, vorschlaege });
       }
     });
-  }
+  });
 
-  // --- RAM ↔ Mainboard: RAM-Typ ---
-  if (neueKategorie === "rams") {
-    gespeicherteMBs.forEach(mb => {
-      const mbRam = mb.daten.ramType || "";
-      const ramTyp = neuesProdukt.ram_type || "";
-      if (ramTyp && mbRam && ramTyp !== mbRam) {
-        const vorschlaege = (DB.rams || [])
-          .filter(r => r.ram_type === mbRam)
-          .slice(0, 3)
-          .map(r => `${r.name} (${r.ram_type})`);
-        fehler.push({
-          meldung: `RAM-Konflikt: Dein RAM ist ${ramTyp}, aber das Mainboard "${mb.daten.name}" hat ${mbRam}-Slots.`,
-          vorschlaege
-        });
-      }
-    });
-  }
-  if (neueKategorie === "motherboards") {
-    gespeicherteRAMs.forEach(ram => {
-      const mbRam = neuesProdukt.ramType || "";
+  // RAM ↔ Mainboard: RAM-Typ
+  rams.forEach(ram => {
+    mbs.forEach(mb => {
+      const mbRam  = mb.daten.ramType || "";
       const ramTyp = ram.daten.ram_type || "";
       if (ramTyp && mbRam && ramTyp !== mbRam) {
-        const vorschlaege = (DB.rams || [])
-          .filter(r => r.ram_type === mbRam)
-          .slice(0, 3)
-          .map(r => `${r.name} (${r.ram_type})`);
-        fehler.push({
-          meldung: `RAM-Konflikt: Dein gespeicherter RAM ist ${ramTyp}, aber das Mainboard "${neuesProdukt.name}" hat ${mbRam}-Slots.`,
-          vorschlaege
-        });
+        const vorschlaege = (DB.rams || []).filter(r => r.ram_type === mbRam).slice(0, 3).map(r => `${r.name} (${r.ram_type})`);
+        fehler.push({ meldung: `RAM-Konflikt: RAM "${ram.daten.name}" (${ramTyp}) passt nicht zu Mainboard "${mb.daten.name}" (${mbRam}-Slots).`, vorschlaege });
       }
     });
-  }
+  });
 
-  // --- RAM-Slot-Overflow ---
-  if (neueKategorie === "rams" && gespeicherteMBs.length > 0) {
-    gespeicherteMBs.forEach(mb => {
-      const maxSlots = parseInt(mb.daten.ramSlots) || 4;
-      const belegteSlots = gespeicherteRAMs.reduce((sum, r) => sum + (r.daten.dimms || 1), 0);
-      const neueSlots = neuesProdukt.dimms || 1;
-      if (belegteSlots + neueSlots > maxSlots) {
-        fehler.push({
-          meldung: `Zu viele RAM-Module: Das Mainboard "${mb.daten.name}" hat nur ${maxSlots} RAM-Slots, aber insgesamt ${belegteSlots + neueSlots} Module würden verbaut.`,
-          vorschlaege: []
-        });
-      }
-    });
-  }
-  if (neueKategorie === "motherboards") {
-    const maxSlots = parseInt(neuesProdukt.ramSlots) || 4;
-    const belegteSlots = gespeicherteRAMs.reduce((sum, r) => sum + (r.daten.dimms || 1), 0);
+  // RAM-Slot-Overflow
+  mbs.forEach(mb => {
+    const maxSlots    = parseInt(mb.daten.ramSlots) || 4;
+    const belegteSlots = rams.reduce((sum, r) => sum + (r.daten.dimms || 1), 0);
     if (belegteSlots > maxSlots) {
-      fehler.push({
-        meldung: `Zu viele RAM-Module: Dieses Mainboard hat ${maxSlots} RAM-Slots, aber du hast bereits ${belegteSlots} RAM-Module gespeichert.`,
-        vorschlaege: []
-      });
+      fehler.push({ meldung: `Zu viele RAM-Module: Mainboard "${mb.daten.name}" hat ${maxSlots} RAM-Slots, du hast aber ${belegteSlots} Module gespeichert.`, vorschlaege: [] });
     }
-  }
+  });
 
-  // --- CPU ↔ Kühler: Sockel-Kompatibilität ---
-  if (neueKategorie === "coolers") {
-    gespeicherteCPUs.forEach(cpu => {
-      const compat = neuesProdukt.socket_compatibility || "";
+  // Kühler ↔ CPU: Sockel
+  kuehler.forEach(k => {
+    cpus.forEach(cpu => {
+      const compat = k.daten.socket_compatibility || "";
       if (compat && !compat.includes(cpu.daten.socket)) {
-        const vorschlaege = (DB.coolers || [])
-          .filter(c => (c.socket_compatibility || "").includes(cpu.daten.socket))
-          .slice(0, 3)
-          .map(c => c.name);
-        fehler.push({
-          meldung: `Kühler-Konflikt: Dieser Kühler unterstützt nicht Sockel "${cpu.daten.socket}" (kompatibel mit: ${compat}).`,
-          vorschlaege
-        });
+        const vorschlaege = (DB.coolers || []).filter(c => (c.socket_compatibility || "").includes(cpu.daten.socket)).slice(0, 3).map(c => c.name);
+        fehler.push({ meldung: `Kühler-Konflikt: "${k.daten.name}" unterstützt keinen ${cpu.daten.socket}-Sockel.`, vorschlaege });
       }
     });
-  }
-  if (neueKategorie === "cpus") {
-    gespeicherteKuehler.forEach(kuehler => {
-      const compat = kuehler.daten.socket_compatibility || "";
-      if (compat && !compat.includes(neuesProdukt.socket)) {
-        const vorschlaege = (DB.coolers || [])
-          .filter(c => (c.socket_compatibility || "").includes(neuesProdukt.socket))
-          .slice(0, 3)
-          .map(c => c.name);
-        fehler.push({
-          meldung: `Kühler-Konflikt: Dein gespeicherter Kühler "${kuehler.daten.name}" unterstützt keinen ${neuesProdukt.socket}-Sockel.`,
-          vorschlaege
-        });
-      }
-    });
-  }
+  });
 
   return fehler;
 }
 
-function zeigeFehler(fehler) {
-  const container = document.getElementById("KompatibilitaetsFehler");
-  if (!container) return;
+function zeigeBuildErgebnis(fehler, gespeicherte) {
+  const fehlerDiv  = document.getElementById("KompatibilitaetsFehler");
+  const ergebnisDiv = document.getElementById("BuildErgebnis");
 
-  if (fehler.length === 0) {
-    container.style.display = "none";
-    container.innerHTML = "";
-    return;
+  if (fehler.length > 0) {
+    // Fehler anzeigen
+    let html = "<h3>⚠️ Inkompatibilität erkannt!</h3>";
+    fehler.forEach(f => {
+      html += `<div class="fehler-eintrag"><div class="fehler-meldung">❌ ${f.meldung}</div>`;
+      if (f.vorschlaege.length > 0) {
+        html += `<div class="fehler-vorschlaege">💡 Passende Alternativen:<ul>`;
+        f.vorschlaege.forEach(v => { html += `<li>${v}</li>`; });
+        html += `</ul></div>`;
+      }
+      html += `</div>`;
+    });
+    fehlerDiv.innerHTML = html;
+    fehlerDiv.style.display = "block";
+    ergebnisDiv.style.display = "none";
+    ergebnisDiv.className = "";
+  } else {
+    // Alles kompatibel → Gesamtpreis berechnen
+    fehlerDiv.style.display = "none";
+    const gesamt = gespeicherte.reduce((sum, k) => sum + parsePreis(k.daten.price), 0);
+    const anzahl = gespeicherte.length;
+    ergebnisDiv.innerHTML = `
+      <div>✅ Alle ${anzahl} Komponenten sind miteinander kompatibel!</div>
+      <div class="preis-gesamt">Geschätzter Gesamtpreis: CHF ${gesamt}.-</div>`;
+    ergebnisDiv.className = "kompatibel";
+    ergebnisDiv.style.display = "block";
   }
-
-  let html = "<h3>⚠️ Inkompatibilität erkannt!</h3>";
-  fehler.forEach(f => {
-    html += `<div class="fehler-eintrag">`;
-    html += `<div class="fehler-meldung">❌ ${f.meldung}</div>`;
-    if (f.vorschlaege.length > 0) {
-      html += `<div class="fehler-vorschlaege">💡 Passende Alternativen:<ul>`;
-      f.vorschlaege.forEach(v => { html += `<li>${v}</li>`; });
-      html += `</ul></div>`;
-    }
-    html += `</div>`;
-  });
-
-  container.innerHTML = html;
-  container.style.display = "block";
 }
 
-// 6. Button: Speichert die Komponente
+// 6. Button: Speichert die Komponente (ohne Kompatibilitätsprüfung)
 saveButton.addEventListener("click", function() {
   const gewaehlteKategorie = BauteilAuswahl.value;
   const gewaehltesModellId = ModellAuswahl.value;
@@ -463,11 +349,6 @@ saveButton.addEventListener("click", function() {
 
   if (!gefundenesProdukt) return;
 
-  // Inkompatibilität prüfen
-  const gespeicherteDaten = ladeSturkturierteDaten();
-  const fehler = pruefeKompatibilitaet(gewaehlteKategorie, gefundenesProdukt, gespeicherteDaten);
-  zeigeFehler(fehler);
-
   if (BauteileListe) {
     const aktuellerText = BauteileListe.value.trim();
     if (
@@ -477,21 +358,19 @@ saveButton.addEventListener("click", function() {
     ) {
       BauteileListe.value = "";
     }
-
     const trenner = BauteileListe.value.length > 0 ? ", " : "";
     BauteileListe.value += `${trenner}${gefundenesProdukt.name} (${gefundenesProdukt.price})`;
     localStorage.setItem("gespeicherteKomponenten", BauteileListe.value);
   }
 
-  // Strukturierte Daten für zukünftige Prüfungen speichern
+  const gespeicherteDaten = ladeSturkturierteDaten();
   gespeicherteDaten.push({ kategorie: gewaehlteKategorie, daten: gefundenesProdukt });
   localStorage.setItem("gespeicherteKomponentenDaten", JSON.stringify(gespeicherteDaten));
 
   if (BauteilBild) {
-    BauteilBild.onerror = () => { BauteilBild.src = 'Images/placeholder.jpg'; };
+    BauteilBild.onerror = () => { BauteilBild.src = "Images/placeholder.jpg"; };
     if (gewaehlteKategorie === "cpus") {
-      const sockelName = gefundenesProdukt.socket.toLowerCase();
-      BauteilBild.src = `Images/sockel-${sockelName}.jpg`;
+      BauteilBild.src = `Images/sockel-${gefundenesProdukt.socket.toLowerCase()}.jpg`;
     } else {
       BauteilBild.src = `Images/${gefundenesProdukt.id}.jpg`;
     }
@@ -499,17 +378,31 @@ saveButton.addEventListener("click", function() {
   }
 });
 
-const resetButton = document.getElementById("resetButton");
+// 7. Button: Build prüfen & Gesamtpreis
+const buildPruefenButton = document.getElementById("buildPruefenButton");
+if (buildPruefenButton) {
+  buildPruefenButton.addEventListener("click", function() {
+    const gespeicherteDaten = ladeSturkturierteDaten();
+    if (gespeicherteDaten.length === 0) {
+      alert("Du hast noch keine Komponenten gespeichert!");
+      return;
+    }
+    const fehler = pruefeAlleKompatibilitaeten(gespeicherteDaten);
+    zeigeBuildErgebnis(fehler, gespeicherteDaten);
+  });
+}
 
+// 8. Button: Liste leeren
+const resetButton = document.getElementById("resetButton");
 if (resetButton) {
   resetButton.addEventListener("click", function() {
-    if (BauteileListe) {
-      BauteileListe.value = "";
-    }
+    if (BauteileListe) BauteileListe.value = "";
     localStorage.removeItem("gespeicherteKomponenten");
     localStorage.removeItem("gespeicherteKomponentenDaten");
-    const container = document.getElementById("KompatibilitaetsFehler");
-    if (container) { container.style.display = "none"; container.innerHTML = ""; }
+    const fehlerDiv   = document.getElementById("KompatibilitaetsFehler");
+    const ergebnisDiv = document.getElementById("BuildErgebnis");
+    if (fehlerDiv)   { fehlerDiv.style.display = "none";   fehlerDiv.innerHTML = ""; }
+    if (ergebnisDiv) { ergebnisDiv.style.display = "none"; ergebnisDiv.className = ""; }
     alert("Die Komponenten-Liste wurde geleert.");
   });
 }
