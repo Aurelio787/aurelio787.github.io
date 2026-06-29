@@ -247,3 +247,28 @@ body {
     font-weight: bold;
     margin-top: 8px;
 }
+
+.vorschlag-btn {
+    display: inline-block;
+    padding: 3px 10px;
+    font-size: 0.85rem;
+    background-color: #e67e00;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 2px;
+}
+
+.vorschlag-btn:hover {
+    background-color: #c96b00;
+}
+
+.darkmode .vorschlag-btn {
+    background-color: #ffaa00;
+    color: #1a0d00;
+}
+
+.darkmode .vorschlag-btn:hover {
+    background-color: #ffc947;
+}
