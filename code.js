@@ -192,7 +192,7 @@ addSpecLine("Preis", gefundenesProdukt.price);
     
     // Bild im Ordner Images/ anzeigen mit Fallback-Sicherung
     if (BauteilBild) {
-      BauteilBild.onerror = () => { BauteilBild.src = 'Images/placeholder.jpg'; };
+      setzeBildFallback(BauteilBild);
       
       if (gewaehlteKategorie === "cpus") {
         const sockelName = gefundenesProdukt.socket.toLowerCase();
@@ -205,6 +205,12 @@ addSpecLine("Preis", gefundenesProdukt.price);
   }
 });
 // 5. Hilfsfunktionen für Build-Prüfung
+const BILD_FALLBACK = "data:image/svg+xml;base64," + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200"><rect width="300" height="200" fill="#e0e0e0" rx="8"/><text x="150" y="100" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-size="14" fill="#999">Kein Bild</text></svg>');
+
+function setzeBildFallback(img) {
+  img.onerror = () => { img.onerror = null; img.src = BILD_FALLBACK; };
+}
+
 function ladeSturkturierteDaten() {
   try {
     return JSON.parse(localStorage.getItem("gespeicherteKomponentenDaten") || "[]");
@@ -322,11 +328,11 @@ function zeigeBuildErgebnis(fehler, gespeicherte) {
 
   if (fehler.length > 0) {
     // Fehler anzeigen
-    let html = "<h3>⚠️ Inkompatibilität erkannt!</h3>";
+    let html = "<h3>Inkompatibilität erkannt!</h3>";
     fehler.forEach(f => {
-      html += `<div class="fehler-eintrag"><div class="fehler-meldung">❌ ${f.meldung}</div>`;
+      html += `<div class="fehler-eintrag"><div class="fehler-meldung">${f.meldung}</div>`;
       if (f.vorschlaege && f.vorschlaege.length > 0) {
-        html += `<div class="fehler-vorschlaege">💡 Passende Alternativen:<ul>`;
+        html += `<div class="fehler-vorschlaege">Passende Alternativen:<ul>`;
         f.vorschlaege.forEach(v => {
           html += `<li><button class="vorschlag-btn" data-ersetze-kat="${f.ersetzeKat}" data-ersetze-id="${f.ersetzeId}" data-neu-kat="${v.neuKat}" data-neu-id="${v.neuId}">${v.label}</button></li>`;
         });
@@ -344,7 +350,7 @@ function zeigeBuildErgebnis(fehler, gespeicherte) {
     const gesamt = gespeicherte.reduce((sum, k) => sum + parsePreis(k.daten.price), 0);
     const anzahl = gespeicherte.length;
     ergebnisDiv.innerHTML = `
-      <div>✅ Alle ${anzahl} Komponenten sind miteinander kompatibel!</div>
+      <div>Alle ${anzahl} Komponenten sind miteinander kompatibel.</div>
       <div class="preis-gesamt">Geschätzter Gesamtpreis: CHF ${gesamt}.-</div>`;
     ergebnisDiv.className = "kompatibel";
     ergebnisDiv.style.display = "block";
@@ -385,7 +391,7 @@ saveButton.addEventListener("click", function() {
   localStorage.setItem("gespeicherteKomponentenDaten", JSON.stringify(gespeicherteDaten));
 
   if (BauteilBild) {
-    BauteilBild.onerror = () => { BauteilBild.src = "Images/placeholder.jpg"; };
+    setzeBildFallback(BauteilBild);
     if (gewaehlteKategorie === "cpus") {
       BauteilBild.src = `Images/sockel-${gefundenesProdukt.socket.toLowerCase()}.jpg`;
     } else {
