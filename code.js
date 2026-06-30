@@ -328,11 +328,11 @@ function zeigeBuildErgebnis(fehler, gespeicherte) {
 
   if (fehler.length > 0) {
     // Fehler anzeigen
-    let html = "<h3>⚠️ Inkompatibilität erkannt!</h3>";
+    let html = "<h3>Inkompatibilität erkannt!</h3>";
     fehler.forEach(f => {
-      html += `<div class="fehler-eintrag"><div class="fehler-meldung">❌ ${f.meldung}</div>`;
+      html += `<div class="fehler-eintrag"><div class="fehler-meldung">${f.meldung}</div>`;
       if (f.vorschlaege && f.vorschlaege.length > 0) {
-        html += `<div class="fehler-vorschlaege">💡 Passende Alternativen:<ul>`;
+        html += `<div class="fehler-vorschlaege">Passende Alternativen:<ul>`;
         f.vorschlaege.forEach(v => {
           html += `<li><button class="vorschlag-btn" data-ersetze-kat="${f.ersetzeKat}" data-ersetze-id="${f.ersetzeId}" data-neu-kat="${v.neuKat}" data-neu-id="${v.neuId}">${v.label}</button></li>`;
         });
@@ -350,7 +350,7 @@ function zeigeBuildErgebnis(fehler, gespeicherte) {
     const gesamt = gespeicherte.reduce((sum, k) => sum + parsePreis(k.daten.price), 0);
     const anzahl = gespeicherte.length;
     ergebnisDiv.innerHTML = `
-      <div>✅ Alle ${anzahl} Komponenten sind miteinander kompatibel!</div>
+      <div>Alle ${anzahl} Komponenten sind miteinander kompatibel.</div>
       <div class="preis-gesamt">Geschätzter Gesamtpreis: CHF ${gesamt}.-</div>`;
     ergebnisDiv.className = "kompatibel";
     ergebnisDiv.style.display = "block";
