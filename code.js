@@ -217,7 +217,8 @@ function pruefeAlleKompatibilitaeten(gespeicherte) {
   const kuehler = gespeicherte.filter(k => k.kategorie === "coolers");
 
   if (cpus.length > 1) {
-    fehler.push({ meldung: `Du hast ${cpus.length} CPUs gespeichert. Standard-Mainboards haben nur einen CPU-Sockel.`, vorschlaege: [] });
+    const entfernbar = cpus.map(cpu => ({ label: cpu.daten.name, index: gespeicherte.indexOf(cpu) }));
+    fehler.push({ meldung: `Du hast ${cpus.length} CPUs gespeichert. Standard-Mainboards haben nur einen CPU-Sockel.`, vorschlaege: [], entfernbar });
   }
 
   cpus.forEach(cpu => {
@@ -267,7 +268,8 @@ function pruefeAlleKompatibilitaeten(gespeicherte) {
     const maxSlots    = parseInt(mb.daten.ramSlots) || 4;
     const belegteSlots = rams.reduce((sum, r) => sum + (r.daten.dimms || 1), 0);
     if (belegteSlots > maxSlots) {
-      fehler.push({ meldung: `Zu viele RAM-Module: Mainboard "${mb.daten.name}" hat ${maxSlots} RAM-Slots, du hast aber ${belegteSlots} Module gespeichert.`, ersetzeKat: null, ersetzeId: null, vorschlaege: [] });
+      const entfernbar = rams.map(ram => ({ label: ram.daten.name, index: gespeicherte.indexOf(ram) }));
+      fehler.push({ meldung: `Zu viele RAM-Module: Mainboard "${mb.daten.name}" hat ${maxSlots} RAM-Slots, du hast aber ${belegteSlots} Module gespeichert.`, ersetzeKat: null, ersetzeId: null, vorschlaege: [], entfernbar });
     }
   });
 
@@ -299,6 +301,25 @@ function ersetzeKomponente(ersetzeKat, ersetzeId, neuKat, neuId) {
   zeigeBuildErgebnis(fehler, gespeicherte);
 }
 
+function entferneKomponente(index) {
+  const gespeicherte = ladeSturkturierteDaten();
+  if (index < 0 || index >= gespeicherte.length) return;
+  gespeicherte.splice(index, 1);
+  const neuerText = gespeicherte.map(k => `${k.daten.name} (${k.daten.price})`).join(", ");
+  localStorage.setItem("gespeicherteKomponentenDaten", JSON.stringify(gespeicherte));
+  localStorage.setItem("gespeicherteKomponenten", neuerText);
+  if (BauteileListe) BauteileListe.value = neuerText;
+  if (gespeicherte.length === 0) {
+    const fehlerDiv   = document.getElementById("KompatibilitaetsFehler");
+    const ergebnisDiv = document.getElementById("BuildErgebnis");
+    if (fehlerDiv)   { fehlerDiv.style.display = "none";   fehlerDiv.innerHTML = ""; }
+    if (ergebnisDiv) { ergebnisDiv.style.display = "none"; ergebnisDiv.className = ""; }
+    return;
+  }
+  const fehler = pruefeAlleKompatibilitaeten(gespeicherte);
+  zeigeBuildErgebnis(fehler, gespeicherte);
+}
+
 function zeigeBuildErgebnis(fehler, gespeicherte) {
   const fehlerDiv  = document.getElementById("KompatibilitaetsFehler");
   const ergebnisDiv = document.getElementById("BuildErgebnis");
@@ -311,6 +332,13 @@ function zeigeBuildErgebnis(fehler, gespeicherte) {
         html += `<div class="fehler-vorschlaege">Passende Alternativen:<ul>`;
         f.vorschlaege.forEach(v => {
           html += `<li><button class="vorschlag-btn" data-ersetze-kat="${f.ersetzeKat}" data-ersetze-id="${f.ersetzeId}" data-neu-kat="${v.neuKat}" data-neu-id="${v.neuId}">${v.label}</button></li>`;
+        });
+        html += `</ul></div>`;
+      }
+      if (f.entfernbar && f.entfernbar.length > 0) {
+        html += `<div class="fehler-entfernen">Eine Komponente entfernen:<ul>`;
+        f.entfernbar.forEach(e => {
+          html += `<li><button class="entfernen-btn" data-index="${e.index}">${e.label} entfernen</button></li>`;
         });
         html += `</ul></div>`;
       }
@@ -391,9 +419,15 @@ if (buildPruefenButton) {
 const fehlerDivGlobal = document.getElementById("KompatibilitaetsFehler");
 if (fehlerDivGlobal) {
   fehlerDivGlobal.addEventListener("click", function(e) {
-    const btn = e.target.closest(".vorschlag-btn");
-    if (!btn) return;
-    ersetzeKomponente(btn.dataset.ersetzeKat, btn.dataset.ersetzeId, btn.dataset.neuKat, btn.dataset.neuId);
+    const vorschlagBtn = e.target.closest(".vorschlag-btn");
+    if (vorschlagBtn) {
+      ersetzeKomponente(vorschlagBtn.dataset.ersetzeKat, vorschlagBtn.dataset.ersetzeId, vorschlagBtn.dataset.neuKat, vorschlagBtn.dataset.neuId);
+      return;
+    }
+    const entfernenBtn = e.target.closest(".entfernen-btn");
+    if (entfernenBtn) {
+      entferneKomponente(parseInt(entfernenBtn.dataset.index, 10));
+    }
   });
 }
 
