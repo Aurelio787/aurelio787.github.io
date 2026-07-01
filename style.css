@@ -94,6 +94,17 @@ body {
     text-size-adjust: 20px;
 }
 
+
+.darkmode #ListeKomponenten {
+    font-size: 200px;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    position: fixed;
+    top: 50%;
+    right: 10px;
+    text-size-adjust: 20px;
+}
+
 #BauteilBild {
     width: 300px;
     height: auto;
