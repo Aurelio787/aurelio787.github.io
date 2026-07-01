@@ -12,18 +12,15 @@ const suchLeiste = document.getElementById("SuchLeiste");
 
 let DB; 
 
-// 1.5 Beim Laden der Seite prüfen, ob bereits gespeicherte Komponenten existieren
 document.addEventListener("DOMContentLoaded", function() {
   const gespeicherteListe = localStorage.getItem("gespeicherteKomponenten");
   const BauteileListe = document.getElementById("ListeKomponente");
   
-  // Wenn etwas im Speicher gefunden wird und die Textbox existiert, dort einfügen
   if (gespeicherteListe && BauteileListe) {
     BauteileListe.value = gespeicherteListe;
   }
 });
 
-// 1. Daten laden
 fetch('./Datenbank.json')
   .then((response) => response.json())
   .then((json) => {
@@ -44,7 +41,6 @@ function startKonfigurator() {
   });
 }
 
-// 2. Kategorie-Wechsel (Modelle werden sofort geladen, Suche ist freiwillig)
 BauteilAuswahl.addEventListener("change", function() {
   const gewaehlteKategorie = BauteilAuswahl.value;
   
@@ -61,7 +57,6 @@ BauteilAuswahl.addEventListener("change", function() {
   });
 });
 
-// 3. Such-Logik (Freiwillig als Hilfestellung)
 if (suchLeiste) {
   suchLeiste.addEventListener("input", function() {
     const suchBegriff = suchLeiste.value.toLowerCase();
@@ -85,14 +80,13 @@ if (suchLeiste) {
   });
 }
 
-// 4. Button: Zeigt Info-Text, Bild und Spezifikationen an
 startButton.addEventListener("click", function() {
   const gewaehlteKategorie = BauteilAuswahl.value;
   const gewaehltesModellId = ModellAuswahl.value;
 
   if (!gewaehltesModellId || !DB[gewaehlteKategorie]) {
     anzeigeDiv.textContent = "Bitte wähle zuerst ein konkretes Modell aus!";
-    if (specsTitel) specsTitel.innerHTML = ""; // Leeres Feld bei Fehler
+    if (specsTitel) specsTitel.innerHTML = "";
     if (BauteilBild) BauteilBild.style.display = "none";
     return;
   }
@@ -101,15 +95,11 @@ startButton.addEventListener("click", function() {
   const gefundenesProdukt = kategorieProdukte.find(item => item.id === gewaehltesModellId);
 
   if (gefundenesProdukt) {
-    // Haupttext oben
     anzeigeDiv.textContent = "Du hast ausgewählt: " + gefundenesProdukt.name + " für " + gefundenesProdukt.price;
     
-    // --- HIER FÄNGT DIE 2. METHODE AN ---
     if (specsTitel) {
-      // Leere die Liste zuerst, falls vorher etwas drin stand
       specsTitel.innerHTML = "";
       
-      // Hilfsfunktion zum Erstellen von Listenelementen
       const addSpecLine = (label, value) => {
         if (value !== undefined && value !== "") {
           const li = document.createElement("li");
@@ -118,12 +108,9 @@ startButton.addEventListener("click", function() {
         }
       };
 
-      // Titel/Produktname als erstes Element hinzufügen
       const liTitle = document.createElement("li");
       liTitle.innerHTML = `<strong>Modell:</strong> ${gefundenesProdukt.name}`;
       specsTitel.appendChild(liTitle);
-
-      // Je nach Kategorie die spezifischen Eigenschaften anhängen
       if (gewaehlteKategorie === "gpus") {
   addSpecLine("Marke", gefundenesProdukt.chip_manufacturer);
   addSpecLine("VRAM", gefundenesProdukt.vram);
@@ -184,13 +171,10 @@ startButton.addEventListener("click", function() {
   addSpecLine("Formfaktor", gefundenesProdukt.form_factor);
 }
 
-// Standardmässig immer den Preis auflisten
 addSpecLine("Preis", gefundenesProdukt.price);
  
     }
-    // --- HIER HÖRT DIE 2. METHODE AUF ---
     
-    // Bild im Ordner Images/ anzeigen mit Fallback-Sicherung
     if (BauteilBild) {
       setzeBildFallback(BauteilBild);
       
@@ -204,7 +188,6 @@ addSpecLine("Preis", gefundenesProdukt.price);
     }
   }
 });
-// 5. Hilfsfunktionen für Build-Prüfung
 const BILD_FALLBACK = "data:image/svg+xml;base64," + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200"><rect width="300" height="200" fill="#e0e0e0" rx="8"/><text x="150" y="100" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-size="14" fill="#999">Kein Bild</text></svg>');
 
 function setzeBildFallback(img) {
@@ -233,12 +216,10 @@ function pruefeAlleKompatibilitaeten(gespeicherte) {
   const rams    = gespeicherte.filter(k => k.kategorie === "rams");
   const kuehler = gespeicherte.filter(k => k.kategorie === "coolers");
 
-  // Mehr als eine CPU
   if (cpus.length > 1) {
     fehler.push({ meldung: `Du hast ${cpus.length} CPUs gespeichert. Standard-Mainboards haben nur einen CPU-Sockel.`, vorschlaege: [] });
   }
 
-  // CPU ↔ Mainboard: Sockel
   cpus.forEach(cpu => {
     mbs.forEach(mb => {
       if (cpu.daten.socket !== mb.daten.socket) {
@@ -248,7 +229,6 @@ function pruefeAlleKompatibilitaeten(gespeicherte) {
     });
   });
 
-  // CPU ↔ Mainboard: RAM-Typ
   cpus.forEach(cpu => {
     mbs.forEach(mb => {
       const cpuRam = cpu.daten.ram || "";
@@ -260,7 +240,6 @@ function pruefeAlleKompatibilitaeten(gespeicherte) {
     });
   });
 
-  // RAM ↔ CPU: RAM-Typ
   rams.forEach(ram => {
     cpus.forEach(cpu => {
       const cpuRam = cpu.daten.ram || "";
@@ -272,7 +251,6 @@ function pruefeAlleKompatibilitaeten(gespeicherte) {
     });
   });
 
-  // RAM ↔ Mainboard: RAM-Typ
   rams.forEach(ram => {
     mbs.forEach(mb => {
       const mbRam  = mb.daten.ramType || "";
@@ -293,7 +271,6 @@ function pruefeAlleKompatibilitaeten(gespeicherte) {
     }
   });
 
-  // Kühler ↔ CPU: Sockel
   kuehler.forEach(k => {
     cpus.forEach(cpu => {
       const compat = k.daten.socket_compatibility || "";
@@ -327,7 +304,6 @@ function zeigeBuildErgebnis(fehler, gespeicherte) {
   const ergebnisDiv = document.getElementById("BuildErgebnis");
 
   if (fehler.length > 0) {
-    // Fehler anzeigen
     let html = "<h3>Inkompatibilität erkannt!</h3>";
     fehler.forEach(f => {
       html += `<div class="fehler-eintrag"><div class="fehler-meldung">${f.meldung}</div>`;
@@ -345,7 +321,6 @@ function zeigeBuildErgebnis(fehler, gespeicherte) {
     ergebnisDiv.style.display = "none";
     ergebnisDiv.className = "";
   } else {
-    // Alles kompatibel → Gesamtpreis berechnen
     fehlerDiv.style.display = "none";
     const gesamt = gespeicherte.reduce((sum, k) => sum + parsePreis(k.daten.price), 0);
     const anzahl = gespeicherte.length;
@@ -357,7 +332,6 @@ function zeigeBuildErgebnis(fehler, gespeicherte) {
   }
 }
 
-// 6. Button: Speichert die Komponente (ohne Kompatibilitätsprüfung)
 saveButton.addEventListener("click", function() {
   const gewaehlteKategorie = BauteilAuswahl.value;
   const gewaehltesModellId = ModellAuswahl.value;
@@ -401,7 +375,6 @@ saveButton.addEventListener("click", function() {
   }
 });
 
-// 7. Button: Build prüfen & Gesamtpreis
 const buildPruefenButton = document.getElementById("buildPruefenButton");
 if (buildPruefenButton) {
   buildPruefenButton.addEventListener("click", function() {
@@ -415,7 +388,6 @@ if (buildPruefenButton) {
   });
 }
 
-// 8. Klick auf Vorschlag-Button → Komponente ersetzen
 const fehlerDivGlobal = document.getElementById("KompatibilitaetsFehler");
 if (fehlerDivGlobal) {
   fehlerDivGlobal.addEventListener("click", function(e) {
@@ -425,7 +397,6 @@ if (fehlerDivGlobal) {
   });
 }
 
-// 10. Button: Liste leeren
 const resetButton = document.getElementById("resetButton");
 if (resetButton) {
   resetButton.addEventListener("click", function() {
