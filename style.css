@@ -7,30 +7,33 @@
 input{
     display: none;
 }
-.display { 
-    width: 100%;
-    height: 100vh;
+.display {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    z-index: 1000;
     display: flex;
     align-items: center;
     justify-content: center;
-    background:white;
 }
-label{
-    width: 400px;
-    height: 200px;
+.display label{
+    width: 90px;
+    height: 44px;
     border-radius: 999px;
     background: white;
-    box-shadow: 10px 10px 30px rgba(0,0,0,0.05) inset;
+    box-shadow: 6px 6px 14px rgba(0,0,0,0.08) inset;
     position: relative;
-}    
+    cursor: pointer;
+    display: block;
+}
 
 .circle {
-    width: 160px;
-    height: 160px;
+    width: 34px;
+    height: 34px;
     border-radius: 99px;
     background: white;
-    box-shadow: 10px 10px 30px rgba(0,0,0,0.005),
-    -10px -10px 30px rgba(0,0,0,0.5) inset;
+    box-shadow: 3px 3px 8px rgba(0,0,0,0.05),
+    -3px -3px 8px rgba(0,0,0,0.5) inset;
     position: absolute;
     top:50%;
     left:0%;
@@ -41,11 +44,11 @@ label{
     overflow: hidden;
 }
 label:active .circle {
-    width: 200px;
+    width: 42px;
     }
 
-svg {
-    width: 80px;
+.display svg {
+    width: 20px;
     position: absolute;
 }
 
@@ -57,9 +60,6 @@ svg {
     margin-top: -150%;
     color:White;
 
-}
-input[type=checkbox]:checked + .display {
-    background: #2c2c2f;
 }
 input[type=checkbox]:checked + .display label {
     background: #1f1f21 ;
@@ -80,12 +80,19 @@ input[type=checkbox]:checked + .display label  .circle .moon {
     margin-top: 0%;
 }
 :root {
-    --base-color: #f9f9f9;       
-    --base-variant: #e0e0e0;     
-    --text-color: #333333;       
+    --base-color: #f9f9f9;
+    --base-variant: #e0e0e0;
+    --text-color: #333333;
     --secondary-text: #666666;
     --primary-color: #007bff;
     --accent-color: #ff5733;
+}
+
+body.darkmode {
+    --base-color: #1a1a1a;
+    --base-variant: #2c2c2f;
+    --text-color: #e6e6e6;
+    --secondary-text: #aaaaaa;
 }
 
 
