@@ -1,7 +1,8 @@
 *{
     margin: 0;
     padding: 0;
-    box-sizing: content-box;
+    box-sizing: border-box;
+    transition: 0.5s;
 }
 input{
     display: none;
@@ -19,18 +20,64 @@ label{
     height: 200px;
     border-radius: 999px;
     background: white;
-    box-shadow: 10px 10px 30px rgba(0,0,0,0.5) inset;
-    cursor: pointer;
-}
-svg {
-    width: 80px;
-}
+    box-shadow: 10px 10px 30px rgba(0,0,0,0.05) inset;
+    position: relative;
+}    
+
 .circle {
     width: 160px;
     height: 160px;
     border-radius: 99px;
     background: white;
+    box-shadow: 10px 10px 30px rgba(0,0,0,0.005),
+    -10px -10px 30px rgba(0,0,0,0.5) inset;
+    position: absolute;
+    top:50%;
+    left:0%;
+    transform:  translate(10%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+label:active .circle {
+    width: 200px;
+    }
+
+svg {
+    width: 80px;
+    position: absolute;
+}
+
+.sun {
+    color:#FFD600;
+    margin-top: 0%;
+}
+.moon {
+    margin-top: -150%;
+    color:White;
+
+}
+input[type=checkbox]:checked + .display {
+    background: #2c2c2f;
+}
+input[type=checkbox]:checked + .display label {
+    background: #1f1f21 ;
     box-shadow: 10px 10px 30px rgba(0,0,0,0.5) inset;
+}
+input[type=checkbox]:checked + .display label  .circle {
+    left: 100%;
+    transform: translate(-110%, -50%);
+    background: #2c2c2f;
+    box-shadow: 10px 10px 30px rgba(0,0,0,0.5),
+    -10px -10px 30px rgba(0,0,0,0.5) inset;
+}
+input[type=checkbox]:checked + .display label  .circle .sun {
+    margin-top: 150%;
+
+}
+input[type=checkbox]:checked + .display label  .circle .moon {
+    margin-top: 0%;
 }
 :root {
     --base-color: #f9f9f9;       
