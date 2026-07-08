@@ -88,14 +88,7 @@ input[type=checkbox]:checked + .display label  .circle .moon {
     --accent-color: #ff5733;
 }
 
-.darkmode {
-    --base-color: #121212;       
-    --base-variant: #2a2a2a;     
-    --text-color: #ffffff;       
-    --secondary-text: #ffcc00;   
-    --primary-color: #3700b3;
-    --accent-color: #ff7597;
-}
+
 
 body {
     font-size: 25px;
@@ -131,39 +124,6 @@ body {
     cursor: pointer;
 }
 
-#theme-switch {
-    height: 50px;
-    width: 50px;
-    padding: 0;
-    border-radius: 50%;
-    background-color: var(--base-variant);
-    border: 1px solid var(--text-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    cursor: pointer;
-}
-
-#theme-switch svg {
-    fill: var(--text-color); 
-}
-
-#theme-switch svg:first-child {
-    display: block;
-}
-#theme-switch svg:last-child {
-    display: none;
-}
-
-.darkmode #theme-switch svg:first-child {
-    display: none;
-}
-.darkmode #theme-switch svg:last-child {
-    display: block;
-}
 #ListeKomponenten {
     font-size: 200px;
     background-color: var(--base-variant);
@@ -175,15 +135,7 @@ body {
 }
 
 
-.darkmode #ListeKomponenten {
-    font-size: 200px;
-    background-color: var(--primary-color);
-    color: var(--text-color);
-    position: fixed;
-    top: 50%;
-    right: 10px;
-    text-size-adjust: 20px;
-}
+
 
 #BauteilBild {
     width: 300px;
@@ -248,11 +200,7 @@ body {
     color: #5a3800;
 }
 
-.darkmode #KompatibilitaetsFehler {
-    background-color: #3a2800;
-    border-color: #ffaa00;
-    color: #ffd080;
-}
+
 
 #KompatibilitaetsFehler h3 {
     margin: 0 0 10px 0;
@@ -330,11 +278,7 @@ body {
     display: none;
 }
 
-.darkmode #BuildErgebnis.kompatibel {
-    background-color: #1a3a22;
-    border-color: #28a745;
-    color: #7fff9a;
-}
+
 
 #BuildErgebnis .preis-gesamt {
     font-size: 1.3rem;
@@ -383,11 +327,3 @@ body {
     background-color: #a03024;
 }
 
-.darkmode .entfernen-btn {
-    background-color: #e74c3c;
-    color: #1a0000;
-}
-
-.darkmode .entfernen-btn:hover {
-    background-color: #ff6b5b;
-}
