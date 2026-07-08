@@ -15,10 +15,22 @@ input{
     background:white;
 }
 label{
-    border: solid;
+    width: 400px;
+    height: 200px;
+    border-radius: 999px;
+    background: white;
+    box-shadow: 10px 10px 30px rgba(0,0,0,0.5) inset;
+    cursor: pointer;
 }
 svg {
     width: 80px;
+}
+.circle {
+    width: 160px;
+    height: 160px;
+    border-radius: 99px;
+    background: white;
+    box-shadow: 10px 10px 30px rgba(0,0,0,0.5) inset;
 }
 :root {
     --base-color: #f9f9f9;       
