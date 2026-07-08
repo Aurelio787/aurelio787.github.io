@@ -1,4 +1,25 @@
-
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: content-box;
+}
+input{
+    display: none;
+}
+.display { 
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:white;
+}
+label{
+    border: solid;
+}
+svg {
+    width: 80px;
+}
 :root {
     --base-color: #f9f9f9;       
     --base-variant: #e0e0e0;     
