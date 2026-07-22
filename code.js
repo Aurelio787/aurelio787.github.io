@@ -209,12 +209,53 @@ function parsePreis(preisString) {
   return isNaN(num) ? 0 : num;
 }
 
+// Holt die erste Zahl aus einem String wie "600W" oder "1200 W" -> 600
+function parseWatt(wattString) {
+  if (!wattString) return 0;
+  const treffer = String(wattString).match(/\d+/);
+  return treffer ? parseInt(treffer[0], 10) : 0;
+}
+
+// Schätzt den Gesamtverbrauch eines Builds in Watt
+function berechneVerbrauch(gpus, cpus) {
+  const REST_VERBRAUCH = 100; // Mainboard, RAM, SSDs, Lüfter etc. (Pauschale)
+  let watt = REST_VERBRAUCH;
+  gpus.forEach(g => watt += parseWatt(g.daten.tdp));
+  cpus.forEach(c => watt += parseWatt(c.daten.tdpboost || c.daten.tdpnormal));
+  return watt;
+}
+
+// Grössen-Rang eines Mainboards: Mini-ITX < Micro-ATX < ATX < E-ATX
+function boardRang(formFactor) {
+  const f = String(formFactor || "").toLowerCase();
+  if (f.includes("e-atx") || f.includes("eatx")) return 4;
+  if (f.includes("micro")) return 2;
+  if (f.includes("itx")) return 1;
+  if (f.includes("atx")) return 3;
+  return 0; // unbekannt
+}
+
+// Grösster Board-Rang, den ein Gehäuse aufnehmen kann
+function caseMaxBoardRang(caseForm) {
+  const f = String(caseForm || "").toLowerCase();
+  if (f.includes("full-tower") || f.includes("big-tower")) return 4; // bis E-ATX
+  if (f.includes("micro-atx")) return 2;
+  if (f.includes("mini-itx")) return 1;
+  if (f.includes("mini-tower")) return 2;
+  if (f.includes("tower")) return 3; // Midi-Tower: bis ATX
+  return 4; // unbekannt -> nicht blockieren
+}
+
 function pruefeAlleKompatibilitaeten(gespeicherte) {
   const fehler = [];
   const cpus    = gespeicherte.filter(k => k.kategorie === "cpus");
   const mbs     = gespeicherte.filter(k => k.kategorie === "motherboards");
   const rams    = gespeicherte.filter(k => k.kategorie === "rams");
   const kuehler = gespeicherte.filter(k => k.kategorie === "coolers");
+  const gpus    = gespeicherte.filter(k => k.kategorie === "gpus");
+  const psus    = gespeicherte.filter(k => k.kategorie === "psu");
+  const cases   = gespeicherte.filter(k => k.kategorie === "cases");
+  const ssds    = gespeicherte.filter(k => k.kategorie === "ssds");
 
   if (cpus.length > 1) {
     const entfernbar = cpus.map(cpu => ({ label: cpu.daten.name, index: gespeicherte.indexOf(cpu) }));
@@ -281,6 +322,122 @@ function pruefeAlleKompatibilitaeten(gespeicherte) {
         fehler.push({ meldung: `Kühler-Konflikt: "${k.daten.name}" unterstützt keinen ${cpu.daten.socket}-Sockel.`, ersetzeKat: "coolers", ersetzeId: k.daten.id, vorschlaege });
       }
     });
+  });
+
+  // Netzteil-Leistung: reicht die Wattzahl für alle Komponenten?
+  if (psus.length > 0 && (gpus.length > 0 || cpus.length > 0)) {
+    const psuGesamt = psus.reduce((sum, p) => sum + parseWatt(p.daten.wattage), 0);
+    const verbrauch = berechneVerbrauch(gpus, cpus);
+    const verbrauchEmpf = Math.ceil(verbrauch * 1.3 / 50) * 50; // +30% Reserve, auf 50W gerundet
+
+    // Hersteller-Empfehlung der GPUs (stärkste Empfehlung + TDP der weiteren GPUs)
+    let herstellerEmpf = 0;
+    if (gpus.length > 0) {
+      const maxEmpf   = Math.max(...gpus.map(g => parseWatt(g.daten.recommended_psu)), 0);
+      const tdpSumme  = gpus.reduce((s, g) => s + parseWatt(g.daten.tdp), 0);
+      const maxTdp    = Math.max(...gpus.map(g => parseWatt(g.daten.tdp)), 0);
+      herstellerEmpf  = maxEmpf + (tdpSumme - maxTdp); // zusätzliche GPUs draufrechnen
+    }
+
+    const empfohlen = Math.max(verbrauchEmpf, herstellerEmpf);
+
+    if (psuGesamt < verbrauch || psuGesamt < empfohlen) {
+      const zuSchwach = psuGesamt < verbrauch;
+      const vorschlaege = (DB.psu || [])
+        .filter(p => parseWatt(p.wattage) >= empfohlen)
+        .slice(0, 3)
+        .map(p => ({ label: `${p.name} (${p.wattage})`, neuKat: "psu", neuId: p.id }));
+
+      const meldung = zuSchwach
+        ? `Netzteil zu schwach: Geschätzter Verbrauch ~${verbrauch}W, aber das Netzteil liefert nur ${psuGesamt}W. Empfohlen: mindestens ${empfohlen}W.`
+        : `Netzteil knapp: Geschätzter Verbrauch ~${verbrauch}W, Netzteil liefert ${psuGesamt}W – wenig Reserve. Empfohlen: mindestens ${empfohlen}W.`;
+
+      fehler.push({
+        meldung,
+        ersetzeKat: "psu",
+        ersetzeId: psus[0].daten.id,
+        vorschlaege
+      });
+    }
+  }
+
+  // Mainboard-Formfaktor muss ins Gehäuse passen
+  cases.forEach(cs => {
+    const maxRang = caseMaxBoardRang(cs.daten.form_factor);
+    mbs.forEach(mb => {
+      const bRang = boardRang(mb.daten.formFactor);
+      if (bRang && maxRang && bRang > maxRang) {
+        const vorschlaege = (DB.motherboards || [])
+          .filter(m => boardRang(m.formFactor) <= maxRang && m.socket === mb.daten.socket)
+          .slice(0, 3)
+          .map(m => ({ label: `${m.name} (${m.formFactor})`, neuKat: "motherboards", neuId: m.id }));
+        fehler.push({
+          meldung: `Formfaktor-Konflikt: Mainboard "${mb.daten.name}" (${mb.daten.formFactor}) passt nicht in Gehäuse "${cs.daten.name}" (${cs.daten.form_factor}).`,
+          ersetzeKat: "motherboards", ersetzeId: mb.daten.id, vorschlaege
+        });
+      }
+    });
+  });
+
+  // Netzteil-Formfaktor: Mini-ITX-Gehäuse brauchen meist SFX statt ATX
+  cases.forEach(cs => {
+    const caseForm = String(cs.daten.form_factor || "").toLowerCase();
+    if (!caseForm.includes("mini-itx")) return;
+    psus.forEach(p => {
+      if (String(p.daten.form_factor || "").toUpperCase() === "ATX") {
+        const vorschlaege = (DB.psu || [])
+          .filter(x => /sfx/i.test(x.form_factor || ""))
+          .slice(0, 3)
+          .map(x => ({ label: `${x.name} (${x.form_factor})`, neuKat: "psu", neuId: x.id }));
+        fehler.push({
+          meldung: `Netzteil-Formfaktor: Gehäuse "${cs.daten.name}" (Mini-ITX) benötigt meist ein SFX/SFX-L-Netzteil, "${p.daten.name}" ist aber ATX.`,
+          ersetzeKat: "psu", ersetzeId: p.daten.id, vorschlaege
+        });
+      }
+    });
+  });
+
+  // Kühler stark genug für die CPU (tdp_rating vs. Boost-TDP)
+  kuehler.forEach(k => {
+    const kTdp = parseWatt(k.daten.tdp_rating);
+    cpus.forEach(cpu => {
+      const cpuTdp = parseWatt(cpu.daten.tdpboost || cpu.daten.tdpnormal);
+      if (kTdp && cpuTdp && kTdp < cpuTdp) {
+        const vorschlaege = (DB.coolers || [])
+          .filter(c => parseWatt(c.tdp_rating) >= cpuTdp && (c.socket_compatibility || "").includes(cpu.daten.socket))
+          .slice(0, 3)
+          .map(c => ({ label: `${c.name} (${c.tdp_rating})`, neuKat: "coolers", neuId: c.id }));
+        fehler.push({
+          meldung: `Kühler zu schwach: "${k.daten.name}" (${kTdp}W) reicht nicht für CPU "${cpu.daten.name}" (~${cpuTdp}W unter Last).`,
+          ersetzeKat: "coolers", ersetzeId: k.daten.id, vorschlaege
+        });
+      }
+    });
+  });
+
+  // Zu viele M.2-SSDs für die vorhandenen M.2-Slots
+  mbs.forEach(mb => {
+    const maxM2 = parseInt(mb.daten.m2Slots) || 0;
+    const m2Ssds = ssds.filter(s => String(s.daten.form_factor || "").toLowerCase().includes("m.2"));
+    if (maxM2 && m2Ssds.length > maxM2) {
+      const entfernbar = m2Ssds.map(s => ({ label: s.daten.name, index: gespeicherte.indexOf(s) }));
+      fehler.push({
+        meldung: `Zu viele M.2-SSDs: Mainboard "${mb.daten.name}" hat ${maxM2} M.2-Slots, du hast aber ${m2Ssds.length} M.2-SSDs gespeichert.`,
+        ersetzeKat: null, ersetzeId: null, vorschlaege: [], entfernbar
+      });
+    }
+  });
+
+  // Einzelteile, die es nur einmal geben sollte
+  [["motherboards", "Mainboards"], ["cases", "Gehäuse"], ["psu", "Netzteile"]].forEach(([kat, label]) => {
+    const items = gespeicherte.filter(k => k.kategorie === kat);
+    if (items.length > 1) {
+      const entfernbar = items.map(it => ({ label: it.daten.name, index: gespeicherte.indexOf(it) }));
+      fehler.push({
+        meldung: `Du hast ${items.length} ${label} gespeichert – in einem Standard-Build ist normalerweise nur eines möglich.`,
+        ersetzeKat: null, ersetzeId: null, vorschlaege: [], entfernbar
+      });
+    }
   });
 
   return fehler;
