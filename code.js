@@ -209,12 +209,30 @@ function parsePreis(preisString) {
   return isNaN(num) ? 0 : num;
 }
 
+// Holt die erste Zahl aus einem String wie "600W" oder "1200 W" -> 600
+function parseWatt(wattString) {
+  if (!wattString) return 0;
+  const treffer = String(wattString).match(/\d+/);
+  return treffer ? parseInt(treffer[0], 10) : 0;
+}
+
+// Schätzt den Gesamtverbrauch eines Builds in Watt
+function berechneVerbrauch(gpus, cpus) {
+  const REST_VERBRAUCH = 100; // Mainboard, RAM, SSDs, Lüfter etc. (Pauschale)
+  let watt = REST_VERBRAUCH;
+  gpus.forEach(g => watt += parseWatt(g.daten.tdp));
+  cpus.forEach(c => watt += parseWatt(c.daten.tdpboost || c.daten.tdpnormal));
+  return watt;
+}
+
 function pruefeAlleKompatibilitaeten(gespeicherte) {
   const fehler = [];
   const cpus    = gespeicherte.filter(k => k.kategorie === "cpus");
   const mbs     = gespeicherte.filter(k => k.kategorie === "motherboards");
   const rams    = gespeicherte.filter(k => k.kategorie === "rams");
   const kuehler = gespeicherte.filter(k => k.kategorie === "coolers");
+  const gpus    = gespeicherte.filter(k => k.kategorie === "gpus");
+  const psus    = gespeicherte.filter(k => k.kategorie === "psu");
 
   if (cpus.length > 1) {
     const entfernbar = cpus.map(cpu => ({ label: cpu.daten.name, index: gespeicherte.indexOf(cpu) }));
@@ -282,6 +300,32 @@ function pruefeAlleKompatibilitaeten(gespeicherte) {
       }
     });
   });
+
+  // Netzteil-Leistung: reicht die Wattzahl für alle Komponenten?
+  if (psus.length > 0 && (gpus.length > 0 || cpus.length > 0)) {
+    const psuGesamt = psus.reduce((sum, p) => sum + parseWatt(p.daten.wattage), 0);
+    const verbrauch = berechneVerbrauch(gpus, cpus);
+    const empfohlen = Math.ceil(verbrauch * 1.3 / 50) * 50; // +30% Reserve, auf 50W gerundet
+
+    if (psuGesamt < verbrauch || psuGesamt < empfohlen) {
+      const zuSchwach = psuGesamt < verbrauch;
+      const vorschlaege = (DB.psu || [])
+        .filter(p => parseWatt(p.wattage) >= empfohlen)
+        .slice(0, 3)
+        .map(p => ({ label: `${p.name} (${p.wattage})`, neuKat: "psu", neuId: p.id }));
+
+      const meldung = zuSchwach
+        ? `Netzteil zu schwach: Geschätzter Verbrauch ~${verbrauch}W, aber das Netzteil liefert nur ${psuGesamt}W. Empfohlen: mindestens ${empfohlen}W.`
+        : `Netzteil knapp: Geschätzter Verbrauch ~${verbrauch}W, Netzteil liefert ${psuGesamt}W – wenig Reserve. Empfohlen: mindestens ${empfohlen}W.`;
+
+      fehler.push({
+        meldung,
+        ersetzeKat: "psu",
+        ersetzeId: psus[0].daten.id,
+        vorschlaege
+      });
+    }
+  }
 
   return fehler;
 }
