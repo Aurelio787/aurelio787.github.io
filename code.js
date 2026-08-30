@@ -1,3 +1,5 @@
+//alert("Achtung!, in diesem PC Konfigurator gibt es KEINE gesicherten Angaben.");w
+
 "use strict";
 
 const BauteilAuswahl = document.getElementById("Bauteil");
