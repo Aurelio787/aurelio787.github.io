@@ -10,20 +10,25 @@
 </head> 
 <body>
     <input id="SuchLeiste" type="text" placeholder="Search">
-    <label for="Bauteil">mach ein Bauteil:</label>
+    <label for="Bauteil">wähle ein Bauteil</label>
 
-    <select id="Bauteil">
-        <option value="">Lade Daten...</option>
-    </select> 
+        <select id="Bauteil">
+            <option value="">Lade Daten...</option>
+         </select> 
 
-    <select id="ModellAuswahl">
-        <option value="">-- Bitte Kategorie wählen --</option>
-    </select>
+        <select id="ModellAuswahl">
+            <option value="">-- Bitte Kategorie wählen --</option>
+        </select>
     
-    <button id="StartButton">Anzeigen</button>
-    <button id="saveComponent">Komponente speichern</button>
+       
 
+
+    <div class="top-controls">
+        
     <h1 id="AusgewaehlterInhalt"></h1>
+     <button id="StartButton">Anzeigen</button>
+        <button id="saveComponent">Komponente speichern</button>
+    </div>
 
     <div id="BildUndSpecsContainer">
         <ul id="AusgewaelterInhaltSpecs"></ul>
@@ -45,7 +50,7 @@
 
     <br><br>
     <button id="resetButton">Liste leeren</button>
-    <button id="buildPruefenButton">Build prüfen &amp; Gesamtpreis</button>
+    <button id="buildPruefenButton">Build prüfen amp; Gesamtpreis</button>
 
     <div id="KompatibilitaetsFehler" style="display:none;"></div>
     <div id="BuildErgebnis" style="display:none;"></div>

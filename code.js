@@ -1,4 +1,4 @@
-//alert("Achtung!, in diesem PC Konfigurator gibt es KEINE gesicherten Angaben.");w
+//alert("Achtung!, in diesem PC Konfigurator gibt es KEINE gesicherten Angaben.");
 
 "use strict";
 
@@ -14,12 +14,47 @@ const suchLeiste = document.getElementById("SuchLeiste");
 
 let DB; 
 
+// Formatiert die Liste nach Kategorien (z.B. GPUs 2 | 1 RTX 5090 / 1 RTX 5090 OC)
+function formatiereKomponentenListe(gespeicherte) {
+  if (!gespeicherte || gespeicherte.length === 0) return "";
+
+  const kategorienMap = {};
+
+  // Nach Kategorie gruppieren
+  gespeicherte.forEach(item => {
+    const kat = item.kategorie ? item.kategorie.toUpperCase() : "SONSTIGE";
+    if (!kategorienMap[kat]) {
+      kategorienMap[kat] = [];
+    }
+    kategorienMap[kat].push(item.daten.name);
+  });
+
+  // Pro Kategorie Anzahl und Modelle formatieren
+  const zeilen = Object.keys(kategorienMap).map(kat => {
+    const namen = kategorienMap[kat];
+    const gesamtAnzahl = namen.length;
+
+    const modellZaehler = {};
+    namen.forEach(name => {
+      modellZaehler[name] = (modellZaehler[name] || 0) + 1;
+    });
+
+    const modellDetails = Object.entries(modellZaehler)
+      .map(([name, anzahl]) => `${anzahl} ${name}`)
+      .join(" / ");
+
+    return `${kat} ${gesamtAnzahl} | ${modellDetails}`;
+  });
+
+  return zeilen.join("\n");
+}
+
 document.addEventListener("DOMContentLoaded", function() {
-  const gespeicherteListe = localStorage.getItem("gespeicherteKomponenten");
+  const gespeicherteDaten = ladeSturkturierteDaten();
   const BauteileListe = document.getElementById("ListeKomponente");
   
-  if (gespeicherteListe && BauteileListe) {
-    BauteileListe.value = gespeicherteListe;
+  if (BauteileListe) {
+    BauteileListe.value = formatiereKomponentenListe(gespeicherteDaten);
   }
 });
 
@@ -113,68 +148,68 @@ startButton.addEventListener("click", function() {
       const liTitle = document.createElement("li");
       liTitle.innerHTML = `<strong>Modell:</strong> ${gefundenesProdukt.name}`;
       specsTitel.appendChild(liTitle);
-      if (gewaehlteKategorie === "gpus") {
-  addSpecLine("Marke", gefundenesProdukt.chip_manufacturer);
-  addSpecLine("VRAM", gefundenesProdukt.vram);
-  addSpecLine("Kühlung", gefundenesProdukt.cooling_type);
-  addSpecLine("TDP", gefundenesProdukt.tdp);
-  addSpecLine("RGB", gefundenesProdukt.rgb);
-  addSpecLine("Grösse", gefundenesProdukt.size);
-} else if (gewaehlteKategorie === "cases") {
-  addSpecLine("Formfaktor", gefundenesProdukt.form_factor);
-  addSpecLine("Farbe", gefundenesProdukt.color);
-  addSpecLine("Seitenteil", gefundenesProdukt.side_panel);
-} else if (gewaehlteKategorie === "psu") {
-  addSpecLine("Anzahl Watt", gefundenesProdukt.wattage);
-  addSpecLine("Sind die Kabel abnehmbar", gefundenesProdukt.certification);
-  addSpecLine("Form Faktor", gefundenesProdukt.form_factor);
-  addSpecLine("ATX Standart", gefundenesProdukt.atx_standard);
-  addSpecLine("warscheinliche Upgrade sicherheit", gefundenesProdukt.warranty);
-} else if (gewaehlteKategorie === "cpus") {
-  addSpecLine("Sockel", gefundenesProdukt.socket);
-  addSpecLine("RAM Kattegorie", gefundenesProdukt.ram);        
-  addSpecLine("Rating", gefundenesProdukt.rating);
-  addSpecLine("Cinebench 24 Singlecore Punktzahl", gefundenesProdukt.cinebench24single);
-  addSpecLine("Cinebench 24 Multicore Punktzahl", gefundenesProdukt.cinebench24multi);
-  addSpecLine("azahl Kerne", gefundenesProdukt.cores);
-  addSpecLine("Standart TDP", gefundenesProdukt.tdpnormal);
-  addSpecLine("Boost TDP", gefundenesProdukt.tdpboost);
-  addSpecLine("L3 Cache", gefundenesProdukt.L3cache);
-} else if (gewaehlteKategorie === "motherboards") {
-  addSpecLine("Chip Satz", gefundenesProdukt.chipset);
-  addSpecLine("Sockel", gefundenesProdukt.socket);
-  addSpecLine("RAM", gefundenesProdukt.ramType);
-  addSpecLine("Anzahl RAM Bänke", gefundenesProdukt.ramSlots);
-  addSpecLine("Form Faktor", gefundenesProdukt.formFactor);
-  addSpecLine("Anzahl M.2 Slots", gefundenesProdukt.m2Slots);
-  addSpecLine("Anzahl Sata Steckplätze", gefundenesProdukt.sataPorts);
-  addSpecLine("Spezielle eigenschaften", gefundenesProdukt.specialFeatures);
-} else if (gewaehlteKategorie === "ssds") {
-  addSpecLine("Form Faktor", gefundenesProdukt.form_factor);
-  addSpecLine("Schnittstelle", gefundenesProdukt.interface);
-  addSpecLine("Kategorie", gefundenesProdukt.category);
-} else if (gewaehlteKategorie === "coolers") {
-  addSpecLine("Kühlart", gefundenesProdukt.cooling_type);
-  if (gefundenesProdukt.radiator_size) {
-    addSpecLine("Grösse dess Radiators", gefundenesProdukt.radiator_size);
-  }
-  addSpecLine("Sockel Kompaktibilität", gefundenesProdukt.socket_compatibility);
-  addSpecLine("Anzahl Lüfter", gefundenesProdukt.fans);
-  addSpecLine("RGB Lüfter?", gefundenesProdukt.rgb);
-} else if (gewaehlteKategorie === "rams") {
-  addSpecLine("Marke", gefundenesProdukt.brand);
-  addSpecLine("RAM-Typ", gefundenesProdukt.ram_type);
-  addSpecLine("Geschwindigkeit", gefundenesProdukt.speed + " MHz");
-  addSpecLine("Kapazität", gefundenesProdukt.capacity + " GB");
-  addSpecLine("Module", gefundenesProdukt.modules);
-  addSpecLine("CAS-Latenz", gefundenesProdukt.cas_latency);
-  addSpecLine("Spannung", gefundenesProdukt.voltage);
-  addSpecLine("RGB", gefundenesProdukt.rgb);
-  addSpecLine("Formfaktor", gefundenesProdukt.form_factor);
-}
 
-addSpecLine("Preis", gefundenesProdukt.price);
- 
+      if (gewaehlteKategorie === "gpus") {
+        addSpecLine("Marke", gefundenesProdukt.chip_manufacturer);
+        addSpecLine("VRAM", gefundenesProdukt.vram);
+        addSpecLine("Kühlung", gefundenesProdukt.cooling_type);
+        addSpecLine("TDP", gefundenesProdukt.tdp);
+        addSpecLine("RGB", gefundenesProdukt.rgb);
+        addSpecLine("Grösse", gefundenesProdukt.size);
+      } else if (gewaehlteKategorie === "cases") {
+        addSpecLine("Formfaktor", gefundenesProdukt.form_factor);
+        addSpecLine("Farbe", gefundenesProdukt.color);
+        addSpecLine("Seitenteil", gefundenesProdukt.side_panel);
+      } else if (gewaehlteKategorie === "psu") {
+        addSpecLine("Anzahl Watt", gefundenesProdukt.wattage);
+        addSpecLine("Sind die Kabel abnehmbar", gefundenesProdukt.certification);
+        addSpecLine("Form Faktor", gefundenesProdukt.form_factor);
+        addSpecLine("ATX Standart", gefundenesProdukt.atx_standard);
+        addSpecLine("warscheinliche Upgrade sicherheit", gefundenesProdukt.warranty);
+      } else if (gewaehlteKategorie === "cpus") {
+        addSpecLine("Sockel", gefundenesProdukt.socket);
+        addSpecLine("RAM Kattegorie", gefundenesProdukt.ram);        
+        addSpecLine("Rating", gefundenesProdukt.rating);
+        addSpecLine("Cinebench 24 Singlecore Punktzahl", gefundenesProdukt.cinebench24single);
+        addSpecLine("Cinebench 24 Multicore Punktzahl", gefundenesProdukt.cinebench24multi);
+        addSpecLine("azahl Kerne", gefundenesProdukt.cores);
+        addSpecLine("Standart TDP", gefundenesProdukt.tdpnormal);
+        addSpecLine("Boost TDP", gefundenesProdukt.tdpboost);
+        addSpecLine("L3 Cache", gefundenesProdukt.L3cache);
+      } else if (gewaehlteKategorie === "motherboards") {
+        addSpecLine("Chip Satz", gefundenesProdukt.chipset);
+        addSpecLine("Sockel", gefundenesProdukt.socket);
+        addSpecLine("RAM", gefundenesProdukt.ramType);
+        addSpecLine("Anzahl RAM Bänke", gefundenesProdukt.ramSlots);
+        addSpecLine("Form Faktor", gefundenesProdukt.formFactor);
+        addSpecLine("Anzahl M.2 Slots", gefundenesProdukt.m2Slots);
+        addSpecLine("Anzahl Sata Steckplätze", gefundenesProdukt.sataPorts);
+        addSpecLine("Spezielle eigenschaften", gefundenesProdukt.specialFeatures);
+      } else if (gewaehlteKategorie === "ssds") {
+        addSpecLine("Form Faktor", gefundenesProdukt.form_factor);
+        addSpecLine("Schnittstelle", gefundenesProdukt.interface);
+        addSpecLine("Kategorie", gefundenesProdukt.category);
+      } else if (gewaehlteKategorie === "coolers") {
+        addSpecLine("Kühlart", gefundenesProdukt.cooling_type);
+        if (gefundenesProdukt.radiator_size) {
+          addSpecLine("Grösse dess Radiators", gefundenesProdukt.radiator_size);
+        }
+        addSpecLine("Sockel Kompaktibilität", gefundenesProdukt.socket_compatibility);
+        addSpecLine("Anzahl Lüfter", gefundenesProdukt.fans);
+        addSpecLine("RGB Lüfter?", gefundenesProdukt.rgb);
+      } else if (gewaehlteKategorie === "rams") {
+        addSpecLine("Marke", gefundenesProdukt.brand);
+        addSpecLine("RAM-Typ", gefundenesProdukt.ram_type);
+        addSpecLine("Geschwindigkeit", gefundenesProdukt.speed + " MHz");
+        addSpecLine("Kapazität", gefundenesProdukt.capacity + " GB");
+        addSpecLine("Module", gefundenesProdukt.modules);
+        addSpecLine("CAS-Latenz", gefundenesProdukt.cas_latency);
+        addSpecLine("Spannung", gefundenesProdukt.voltage);
+        addSpecLine("RGB", gefundenesProdukt.rgb);
+        addSpecLine("Formfaktor", gefundenesProdukt.form_factor);
+      }
+
+      addSpecLine("Preis", gefundenesProdukt.price);
     }
     
     if (BauteilBild) {
@@ -190,6 +225,7 @@ addSpecLine("Preis", gefundenesProdukt.price);
     }
   }
 });
+
 const BILD_FALLBACK = "data:image/svg+xml;base64," + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200"><rect width="300" height="200" fill="#e0e0e0" rx="8"/><text x="150" y="100" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-size="14" fill="#999">Kein Bild</text></svg>');
 
 function setzeBildFallback(img) {
@@ -211,41 +247,37 @@ function parsePreis(preisString) {
   return isNaN(num) ? 0 : num;
 }
 
-// Holt die erste Zahl aus einem String wie "600W" oder "1200 W" -> 600
 function parseWatt(wattString) {
   if (!wattString) return 0;
   const treffer = String(wattString).match(/\d+/);
   return treffer ? parseInt(treffer[0], 10) : 0;
 }
 
-// Schätzt den Gesamtverbrauch eines Builds in Watt
 function berechneVerbrauch(gpus, cpus) {
-  const REST_VERBRAUCH = 100; // Mainboard, RAM, SSDs, Lüfter etc. (Pauschale)
+  const REST_VERBRAUCH = 100;
   let watt = REST_VERBRAUCH;
   gpus.forEach(g => watt += parseWatt(g.daten.tdp));
   cpus.forEach(c => watt += parseWatt(c.daten.tdpboost || c.daten.tdpnormal));
   return watt;
 }
 
-// Grössen-Rang eines Mainboards: Mini-ITX < Micro-ATX < ATX < E-ATX
 function boardRang(formFactor) {
   const f = String(formFactor || "").toLowerCase();
   if (f.includes("e-atx") || f.includes("eatx")) return 4;
   if (f.includes("micro")) return 2;
   if (f.includes("itx")) return 1;
   if (f.includes("atx")) return 3;
-  return 0; // unbekannt
+  return 0;
 }
 
-// Grösster Board-Rang, den ein Gehäuse aufnehmen kann
 function caseMaxBoardRang(caseForm) {
   const f = String(caseForm || "").toLowerCase();
-  if (f.includes("full-tower") || f.includes("big-tower")) return 4; // bis E-ATX
+  if (f.includes("full-tower") || f.includes("big-tower")) return 4;
   if (f.includes("micro-atx")) return 2;
   if (f.includes("mini-itx")) return 1;
   if (f.includes("mini-tower")) return 2;
-  if (f.includes("tower")) return 3; // Midi-Tower: bis ATX
-  return 4; // unbekannt -> nicht blockieren
+  if (f.includes("tower")) return 3;
+  return 4;
 }
 
 function pruefeAlleKompatibilitaeten(gespeicherte) {
@@ -306,7 +338,6 @@ function pruefeAlleKompatibilitaeten(gespeicherte) {
     });
   });
 
-  // RAM-Slot-Overflow
   mbs.forEach(mb => {
     const maxSlots    = parseInt(mb.daten.ramSlots) || 4;
     const belegteSlots = rams.reduce((sum, r) => sum + (r.daten.dimms || 1), 0);
@@ -326,19 +357,17 @@ function pruefeAlleKompatibilitaeten(gespeicherte) {
     });
   });
 
-  // Netzteil-Leistung: reicht die Wattzahl für alle Komponenten?
   if (psus.length > 0 && (gpus.length > 0 || cpus.length > 0)) {
     const psuGesamt = psus.reduce((sum, p) => sum + parseWatt(p.daten.wattage), 0);
     const verbrauch = berechneVerbrauch(gpus, cpus);
-    const verbrauchEmpf = Math.ceil(verbrauch * 1.3 / 50) * 50; // +30% Reserve, auf 50W gerundet
+    const verbrauchEmpf = Math.ceil(verbrauch * 1.3 / 50) * 50;
 
-    // Hersteller-Empfehlung der GPUs (stärkste Empfehlung + TDP der weiteren GPUs)
     let herstellerEmpf = 0;
     if (gpus.length > 0) {
       const maxEmpf   = Math.max(...gpus.map(g => parseWatt(g.daten.recommended_psu)), 0);
       const tdpSumme  = gpus.reduce((s, g) => s + parseWatt(g.daten.tdp), 0);
       const maxTdp    = Math.max(...gpus.map(g => parseWatt(g.daten.tdp)), 0);
-      herstellerEmpf  = maxEmpf + (tdpSumme - maxTdp); // zusätzliche GPUs draufrechnen
+      herstellerEmpf  = maxEmpf + (tdpSumme - maxTdp);
     }
 
     const empfohlen = Math.max(verbrauchEmpf, herstellerEmpf);
@@ -363,7 +392,6 @@ function pruefeAlleKompatibilitaeten(gespeicherte) {
     }
   }
 
-  // Mainboard-Formfaktor muss ins Gehäuse passen
   cases.forEach(cs => {
     const maxRang = caseMaxBoardRang(cs.daten.form_factor);
     mbs.forEach(mb => {
@@ -381,7 +409,6 @@ function pruefeAlleKompatibilitaeten(gespeicherte) {
     });
   });
 
-  // Netzteil-Formfaktor: Mini-ITX-Gehäuse brauchen meist SFX statt ATX
   cases.forEach(cs => {
     const caseForm = String(cs.daten.form_factor || "").toLowerCase();
     if (!caseForm.includes("mini-itx")) return;
@@ -399,7 +426,6 @@ function pruefeAlleKompatibilitaeten(gespeicherte) {
     });
   });
 
-  // Kühler stark genug für die CPU (tdp_rating vs. Boost-TDP)
   kuehler.forEach(k => {
     const kTdp = parseWatt(k.daten.tdp_rating);
     cpus.forEach(cpu => {
@@ -417,7 +443,6 @@ function pruefeAlleKompatibilitaeten(gespeicherte) {
     });
   });
 
-  // Zu viele M.2-SSDs für die vorhandenen M.2-Slots
   mbs.forEach(mb => {
     const maxM2 = parseInt(mb.daten.m2Slots) || 0;
     const m2Ssds = ssds.filter(s => String(s.daten.form_factor || "").toLowerCase().includes("m.2"));
@@ -430,7 +455,6 @@ function pruefeAlleKompatibilitaeten(gespeicherte) {
     }
   });
 
-  // Einzelteile, die es nur einmal geben sollte
   [["motherboards", "Mainboards"], ["cases", "Gehäuse"], ["psu", "Netzteile"]].forEach(([kat, label]) => {
     const items = gespeicherte.filter(k => k.kategorie === kat);
     if (items.length > 1) {
@@ -452,7 +476,8 @@ function ersetzeKomponente(ersetzeKat, ersetzeId, neuKat, neuId) {
   const idx = gespeicherte.findIndex(k => k.kategorie === ersetzeKat && k.daten.id === ersetzeId);
   if (idx === -1) return;
   gespeicherte[idx] = { kategorie: neuKat, daten: neuDaten };
-  const neuerText = gespeicherte.map(k => `${k.daten.name} (${k.daten.price})`).join(", ");
+  
+  const neuerText = formatiereKomponentenListe(gespeicherte);
   localStorage.setItem("gespeicherteKomponentenDaten", JSON.stringify(gespeicherte));
   localStorage.setItem("gespeicherteKomponenten", neuerText);
   if (BauteileListe) BauteileListe.value = neuerText;
@@ -464,10 +489,12 @@ function entferneKomponente(index) {
   const gespeicherte = ladeSturkturierteDaten();
   if (index < 0 || index >= gespeicherte.length) return;
   gespeicherte.splice(index, 1);
-  const neuerText = gespeicherte.map(k => `${k.daten.name} (${k.daten.price})`).join(", ");
+  
+  const neuerText = formatiereKomponentenListe(gespeicherte);
   localStorage.setItem("gespeicherteKomponentenDaten", JSON.stringify(gespeicherte));
   localStorage.setItem("gespeicherteKomponenten", neuerText);
   if (BauteileListe) BauteileListe.value = neuerText;
+  
   if (gespeicherte.length === 0) {
     const fehlerDiv   = document.getElementById("KompatibilitaetsFehler");
     const ergebnisDiv = document.getElementById("BuildErgebnis");
@@ -533,23 +560,16 @@ saveButton.addEventListener("click", function() {
 
   if (!gefundenesProdukt) return;
 
-  if (BauteileListe) {
-    const aktuellerText = BauteileListe.value.trim();
-    if (
-      aktuellerText === "Liste deiner Komponenten" ||
-      aktuellerText === "Liste ihrer Komponenten" ||
-      aktuellerText === "Deine ausgewählten Komponenten:"
-    ) {
-      BauteileListe.value = "";
-    }
-    const trenner = BauteileListe.value.length > 0 ? ", " : "";
-    BauteileListe.value += `${trenner}${gefundenesProdukt.name} (${gefundenesProdukt.price})`;
-    localStorage.setItem("gespeicherteKomponenten", BauteileListe.value);
-  }
-
   const gespeicherteDaten = ladeSturkturierteDaten();
   gespeicherteDaten.push({ kategorie: gewaehlteKategorie, daten: gefundenesProdukt });
   localStorage.setItem("gespeicherteKomponentenDaten", JSON.stringify(gespeicherteDaten));
+
+  const neuerText = formatiereKomponentenListe(gespeicherteDaten);
+  localStorage.setItem("gespeicherteKomponenten", neuerText);
+
+  if (BauteileListe) {
+    BauteileListe.value = neuerText;
+  }
 
   if (BauteilBild) {
     setzeBildFallback(BauteilBild);
