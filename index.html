@@ -9,30 +9,7 @@
     <link rel="stylesheet" href="style.css">
 </head> 
 <body>
-    <input id="SuchLeiste" type="text" placeholder="Search">
-    <label for="Bauteil">wähle ein Bauteil</label>
-
-        <select id="Bauteil">
-            <option value="">Lade Daten...</option>
-         </select> 
-
-        <select id="ModellAuswahl">
-            <option value="">-- Bitte Kategorie wählen --</option>
-        </select>
     
-       
-
-
-    <div class="top-controls">
-        
-    <h1 id="AusgewaehlterInhalt"></h1>
-     <button id="StartButton">Anzeigen</button>
-        <button id="saveComponent">Komponente speichern</button>
-    </div>
-
-    <div id="BildUndSpecsContainer">
-        <ul id="AusgewaelterInhaltSpecs"></ul>
-        <img id="BauteilBild">
     </div>   <input type="checkbox" id="theme-switch">
     <div class="display">
         <label for="theme-switch">
@@ -48,15 +25,6 @@
         </label>
     </div>
 
-    <br><br>
-    <button id="resetButton">Liste leeren</button>
-    <button id="buildPruefenButton">Build prüfen amp; Gesamtpreis</button>
-
-    <div id="KompatibilitaetsFehler" style="display:none;"></div>
-    <div id="BuildErgebnis" style="display:none;"></div>
-
-    <textarea id="ListeKomponente" rows="10" cols="40" placeholder="Deine ausgewählten Komponenten:" readonly></textarea>
-    
 
     <script src="code.js"></script>
 </body>
