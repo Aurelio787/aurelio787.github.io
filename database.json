@@ -1,5 +1,5 @@
 {
-  "gpus": [
+  "GPU": [
     {
       "id": "gpu-palit-1",
       "type": "GPU",
@@ -19001,7 +19001,7 @@
       "recommended_psu": "1000W"
     }
   ],
-  "cpus": [
+  "CPU": [
     {
       "id": "cpu-amd-1",
       "type": "CPU",
@@ -22903,7 +22903,7 @@
       "price": "ca. 282 CHF"
     }
   ],
-  "motherboards": [
+  "Motherboard": [
     {
       "id": "mb-asrock-1",
       "type": "Motherboard",
@@ -27105,7 +27105,7 @@
       "price": "ca. 295 CHF"
     }
   ],
-  "psus": [
+  "PSU": [
     {
       "id": "psu-seasonic-1",
       "type": "PSU",
@@ -28907,7 +28907,7 @@
       "efficiency": "80 PLUS Gold"
     }
   ],
-  "cases": [
+  "Cases": [
     {
       "id": "case-nzxt-1",
       "type": "Case",
@@ -30709,7 +30709,7 @@
       "side_panel": "Echtglas"
     }
   ],
-  "ssds": [
+  "SSD": [
     {
       "id": "ssd-wd_black-1",
       "type": "SSD",
@@ -32511,7 +32511,7 @@
       "interface": "NVMe PCIe 4.0"
     }
   ],
-  "ram": [
+  "RAM": [
     {
       "id": "ram-g.skill-1",
       "type": "RAM",
