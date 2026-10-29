@@ -6,7 +6,7 @@
     <title>PC-Konfigurator</title>
     
     <script src="darkmode.js" defer></script>
-    <!-- <script src="code.js" defer></script> -->
+    <script src="code.js" defer></script> 
     <link rel="stylesheet" href="style.css">
 </head> 
 <body>
@@ -14,21 +14,23 @@
     <h1>PC-Konfigurator</h1>
     <p>Wähle die Komponenten für deinen PC aus:</p>
     
+    <label for="category-select">Kategorie:</label>
     <div class="search-container">
-        <label for="category-select">Kategorie:</label>
-        <select id="category-select">
-            <option value="all">Alle</option>
-            <option value="GPU">GPU</option>
-            <option value="CPU">CPU</option>
-            <option value="PSU">PSU</option>
-            <option value="Motherboard">Motherboard</option>
-            <option value="RAM">RAM</option>
-            <option value="SSD">SSD</option>
-            <option value="Cases">Gehäuse</option>
-            <option value="Coolers">Kühler</option>
-            <option value="thermal_paste">Wärmeleitpaste</option>
-            <option value="fans">Lüfter</option>
-        </select>
+    <select id="category-select">
+    <option value="all">Alle</option>
+    <option value="GPU">GPU</option>            
+    <option value="CPU">CPU</option>             
+    <option value="PSU">PSU</option>            
+    <option value="Motherboard">Motherboard</option>             
+    <option value="RAM">RAM</option>             
+    <option value="SSD">SSD</option>             
+    <option value="Cases">Gehäuse</option>             
+    <option value="Coolers">Kühler</option>             
+    <option value="thermal_paste">Wärmeleitpaste</option>             
+    <option value="fans">Lüfter</option>         
+    </select> 
+        
+
     </div>
 
     <input type="text" id="search-input" placeholder="Suche nach Komponenten...">
